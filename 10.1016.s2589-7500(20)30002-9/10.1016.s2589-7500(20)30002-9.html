@@ -157,54 +157,6 @@
           <i class="fa fa-flask text-2xl text-primary"></i>
           <span class="text-xl font-bold">AI与肺癌精准诊疗</span>
         </div>
-        <div class="hidden md:flex space-x-6">
-          <a href="#overview" class="hover:text-primary transition-colors"
-            >研究背景</a
-          >
-          <a href="#technology" class="hover:text-primary transition-colors"
-            >方法学</a
-          >
-          <a href="#results" class="hover:text-primary transition-colors"
-            >研究结果</a
-          >
-          <a href="#biology" class="hover:text-primary transition-colors"
-            >机制解析</a
-          >
-          <a href="#future" class="hover:text-primary transition-colors"
-            >结论展望</a
-          >
-        </div>
-        <button
-          class="md:hidden text-dark focus:outline-none"
-          id="mobile-menu-button"
-        >
-          <i class="fa fa-bars text-xl"></i>
-        </button>
-      </div>
-      <!-- 移动端菜单 -->
-      <div
-        class="md:hidden hidden bg-white border-t border-gray-200"
-        id="mobile-menu"
-      >
-        <div class="container mx-auto px-4 py-2 flex flex-col space-y-2">
-          <a href="#overview" class="py-2 hover:text-primary transition-colors"
-            >研究背景</a
-          >
-          <a
-            href="#technology"
-            class="py-2 hover:text-primary transition-colors"
-            >方法学</a
-          >
-          <a href="#results" class="py-2 hover:text-primary transition-colors"
-            >研究结果</a
-          >
-          <a href="#biology" class="py-2 hover:text-primary transition-colors"
-            >机制解析</a
-          >
-          <a href="#future" class="py-2 hover:text-primary transition-colors"
-            >结论展望</a
-          >
-        </div>
       </div>
     </nav>
 
@@ -407,25 +359,36 @@
     <footer class="bg-dark text-white py-8">
       <div class="container mx-auto px-4">
         <div class="max-w-5xl mx-auto">
-          <div
-            class="flex flex-col md:flex-row justify-between items-center mb-6"
-          >
-            <div class="flex items-center mb-4 md:mb-0">
-              <i class="fa fa-flask text-2xl text-primary mr-2"></i>
-              <span class="text-xl font-bold">AI与肺癌精准诊疗</span>
-            </div>
-            <div class="flex space-x-4">
-              <a href="https://github.com/LCOFFEE7/Presentation-of-papers/blob/main/10.1016.s2589-7500(20)30002-9/CT%20derived%20radiomic%20score%20for%20predicting%20the%20added%20beneft%20of%20adjuvant-paper.pdf" class="hover:text-primary transition-colors">
-                <i class="fa fa-file-pdf-o text-xl"></i>
-                <span class="ml-2" style="color: rgb(255, 255, 255);text-decoration: underline">原文下载</span>
-              </a>
-              <a href="https://github.com/LCOFFEE7/Presentation-of-papers/blob/main/10.1016.s2589-7500(20)30002-9/CT%20derived%20radiomic%20score%20for%20predicting%20the%20added%20beneft%20of%20adjuvant-supplementary.pdf" class="hover:text-primary transition-colors">
-                <i class="fa fa-file-pdf-o text-xl"></i>
-                <span class="ml-2" style="color: rgb(255, 255, 255);text-decoration: underline">附件</span>
-              </a>
+          <div class="flex flex-col items-center mb-6 text-center">
+  <!-- 第一行：标题 居中 -->
+  <div class="flex items-center mb-4">
+    <i class="fa fa-flask text-2xl text-primary mr-2"></i>
+    <span class="text-xl font-bold text-white">AI与肺癌精准诊疗</span>
+  </div>
 
-            </div>
-          </div>
+  <!-- 第二行：下载链接 居中 -->
+  <div class="flex space-x-8 items-center justify-center">
+    <!-- 原文下载 -->
+    <a 
+      href="https://github.com/LCOFFEE7/Presentation-of-papers/blob/main/10.1016.s2589-7500(20)30002-9/CT%20derived%20radiomic%20score%20for%20predicting%20the%20added%20beneft%20of%20adjuvant-paper.pdf" 
+      class="flex items-center hover:text-primary transition-colors"
+      target="_blank"
+    >
+      <i class="fa fa-file-pdf-o text-xl mr-2"></i>
+      <span class="text-white underline">原文下载</span>
+    </a>
+
+    <!-- 附件 -->
+    <a 
+      href="https://github.com/LCOFFEE7/Presentation-of-papers/blob/main/10.1016.s2589-7500(20)30002-9/CT%20derived%20radiomic%20score%20for%20predicting%20the%20added%20beneft%20of%20adjuvant-supplementary.pdf" 
+      class="flex items-center hover:text-primary transition-colors"
+      target="_blank"
+    >
+      <i class="fa fa-file-pdf-o text-xl mr-2"></i>
+      <span class="text-white underline">附件</span>
+    </a>
+  </div>
+</div>
           <div class="border-t border-gray-700 pt-6">
             <p class="text-center text-gray-400">
               © lta的科学报道 | 基于《柳叶刀·数字健康》发表的研究
