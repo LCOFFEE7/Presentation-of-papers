@@ -78,6 +78,7 @@
         box-shadow:
           0 4px 6px -1px rgba(0, 0, 0, 0.1),
           0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        cursor: zoom-in;
       }
 
       .image-container img {
@@ -86,6 +87,39 @@
 
       .image-container:hover img {
         transform: scale(1.05);
+      }
+
+      /* 图片放大覆盖层 */
+      .image-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition:
+          opacity 0.3s ease,
+          visibility 0.3s ease;
+      }
+
+      .image-overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .image-overlay img {
+        max-width: 90%;
+        max-height: 90%;
+        object-fit: contain;
+        cursor: zoom-out;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        border-radius: 0.25rem;
       }
 
       /* 引用样式 */
@@ -106,6 +140,34 @@
         border-left-color: #e53e3e;
         transform: translateX(5px);
       }
+
+      /* 优化段落间距 */
+      p {
+        margin-bottom: 1rem;
+        font-size: 1.125rem; /* 进一步增加基础字体大小 */
+      }
+
+      /* 优化列表间距 */
+      ul,
+      ol {
+        margin-bottom: 1rem;
+      }
+
+      /* 优化标题与内容间距 */
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        margin-bottom: 0.75rem;
+      }
+
+      /* 调整图片容器 */
+      .image-container {
+        margin: 1.5rem auto; /* 增加上下间距 */
+        max-width: 80%; /* 图片宽度限制为容器的80%，增加左右间距 */
+      }
     </style>
   </head>
   <body class="bg-gray-50 text-gray-800 font-sans">
@@ -116,7 +178,7 @@
       >
         <div class="flex items-center space-x-2">
           <i class="fa fa-lungs text-2xl"></i>
-          <span class="text-xl font-bold"
+          <span class="text-lg md:text-xl font-bold"
             >像素间的"判官"：AI如何破解早期肺癌的化疗迷局</span
           >
         </div>
@@ -138,8 +200,8 @@
         </div>
       </div>
       <!-- 移动端菜单 -->
-      <div id="mobile-menu" class="hidden md:hidden bg-primary pb-4">
-        <div class="container mx-auto px-4 flex flex-col space-y-3">
+      <div id="mobile-menu" class="hidden md:hidden bg-primary pb-3">
+        <div class="container mx-auto px-4 flex flex-col space-y-2">
           <a href="#section-6" class="hover:text-gray-300 transition-smooth"
             >第六部分</a
           >
@@ -155,14 +217,35 @@
 
     <!-- 页面标题 -->
     <header
-      class="bg-gradient-to-r from-primary to-primary/80 text-white py-16"
+      class="bg-gradient-to-r from-primary to-primary/80 text-white py-16 md:py-24 flex items-center justify-center"
     >
-      <div class="container mx-auto px-4 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4 text-shadow">
-          揭开黑箱
-        </h1>
+      <div class="container mx-auto px-4 text-center max-w-4xl">
+        <div
+          class="bg-white/10 backdrop-blur-sm rounded-xl p-8 md:p-12 shadow-lg border border-white/20"
+        >
+          <h1 class="text-4xl md:text-6xl font-bold mb-6 text-shadow">
+            揭开黑箱
+          </h1>
+          <div class="w-24 h-1 bg-white mx-auto mb-6"></div>
+          <p class="text-lg md:text-xl opacity-90 leading-relaxed">
+            Vaidya P, et al. "CT derived radiomic score for predicting the added
+            benefit of adjuvant chemotherapy following surgery in stage I, II
+            resectable non-small cell lung cancer: a retrospective multicohort
+            study for outcome prediction." <em>The Lancet Digital Health</em>,
+            2020
+          </p>
+        </div>
+      </div>
+    </header>
 
-        <p class="mt-4 text-sm md:text-base opacity-80">
+    <!-- 主要内容 -->
+    <main class="container mx-auto px-4 py-6">
+      <!-- 内容标题 -->
+      <div class="mb-6">
+        <h1 class="text-2xl font-bold text-primary mb-2">
+          QuRiS研究：像素间的判官——AI如何破解早期肺癌的化疗迷局
+        </h1>
+        <p class="text-sm text-gray-600">
           Vaidya P, et al. "CT derived radiomic score for predicting the added
           benefit of adjuvant chemotherapy following surgery in stage I, II
           resectable non-small cell lung cancer: a retrospective multicohort
@@ -170,299 +253,360 @@
           2020
         </p>
       </div>
-    </header>
 
-    <!-- 主要内容 -->
-    <main class="container mx-auto px-4 py-12">
-      <!-- 第六部分 -->
-      <section id="section-6" class="mb-16">
-        <div class="flex items-center mb-6">
-          <div
-            class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white text-xl font-bold mr-4"
-          >
-            6
+      <!-- 内容区域 - 单栏布局 -->
+      <div class="space-y-6">
+        <!-- 第六部分 -->
+        <section
+          id="section-6"
+          class="bg-white rounded-lg shadow-custom p-4 hover-scale"
+        >
+          <div class="flex items-center mb-3">
+            <div
+              class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold mr-2"
+            >
+              6
+            </div>
+            <h2 class="text-xl font-bold text-primary">
+              微观形态与放射基因组学分析
+            </h2>
           </div>
-          <h2 class="text-3xl font-bold text-primary">
-            微观形态与放射基因组学分析
-          </h2>
-        </div>
 
-        <div class="bg-white rounded-lg shadow-custom p-6 mb-8 hover-scale">
-          <p class="mb-6 text-lg">
+          <p class="mb-3 text-lg">
             研究团队通过微观分析和放射基因组学研究，深入探索了QuRiS评分与肿瘤生物学特性之间的关联。
           </p>
 
-          <div class="mb-8">
-            <h3 class="text-xl font-semibold mb-4 text-primary">
-              肿瘤微观形态差异
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div class="image-container">
-                <img
-                  src="figure2.png"
-                  alt="低风险和高风险肺癌患者的微观图像对比"
-                  class="w-full h-auto"
-                />
-              </div>
-              <div>
-                <p class="mb-4">
-                  左边（图G）是低风险患者，右边（图H）是高风险患者。我们能清晰地看到，被QuRiS评定为'高风险'的肿瘤，在微观下表现出了极度密集、紧密结合的癌细胞团块（大片红色区域）。
-                </p>
-                <p class="mb-4">
-                  这种野蛮生长的癌细胞簇形成了一道物理屏障，把代表我们免疫大军的淋巴细胞（绿色标记）死死挡在外面。
-                </p>
-                <p class="font-semibold text-primary">
-                  这证明了，我们在宏观CT上捕捉到的不良纹理，其本质是微观层面免疫细胞被排挤、免疫包围圈失效的高恶性表现。
-                </p>
-              </div>
+          <h3 class="text-lg font-semibold mb-2 text-primary">
+            肿瘤微观形态差异
+          </h3>
+          <div class="image-container mb-4">
+            <img
+              src="https://lcoffee7.github.io/Presentation-of-papers/10.1016.s2589-7500(20)30002-9/figure2.png"
+              alt="低风险和高风险肺癌患者的微观图像对比"
+              class="w-full h-auto"
+            />
+          </div>
+          <p class="mb-2 text-lg">
+            左边（图G）是低风险患者，右边（图H）是高风险患者。被QuRiS评定为'高风险'的肿瘤，在微观下表现出了极度密集、紧密结合的癌细胞团块（大片红色区域）。
+          </p>
+          <p class="mb-2 text-lg">
+            这种野蛮生长的癌细胞簇形成了一道物理屏障，把代表我们免疫大军的淋巴细胞（绿色标记）死死挡在外面。
+          </p>
+          <p class="font-semibold text-primary text-lg mb-4">
+            这证明了，我们在宏观CT上捕捉到的不良纹理，其本质是微观层面免疫细胞被排挤、免疫包围圈失效的高恶性表现。
+          </p>
+
+          <h3 class="text-lg font-semibold mb-2 text-primary">
+            放射基因组学分析
+          </h3>
+          <div class="image-container mb-3">
+            <img
+              src="https://lcoffee7.github.io/Presentation-of-papers/10.1016.s2589-7500(20)30002-9/figure3.png"
+              alt="放射基因组学分析图"
+              class="w-full h-auto"
+            />
+          </div>
+          <p class="mb-2 text-lg">
+            研究团队进一步做了放射基因组学分析，探索影像特征与基因表达之间的关系：
+          </p>
+          <ul class="list-disc pl-5 mb-2 text-lg space-y-1">
+            <li>
+              <strong>横轴 (X轴, QuRiS)</strong
+              >：代表患者的CT影像评分。从左向右看，数值从负到正，代表患者的影像学风险越来越高。
+            </li>
+            <li>
+              <strong>纵轴 (Y轴)</strong
+              >：代表某种恶性生物学通路的活跃程度（基因集富集得分）。
+            </li>
+            <li>
+              <strong>红线趋势</strong
+              >：沿着X轴向右看，红线呈现出清晰的"上升趋势"，说明影像评分越高，该恶性通路越活跃。
+            </li>
+          </ul>
+          <p class="font-semibold text-primary text-lg">
+            这意味着，随着CT影像提示风险越高，患者体内的特定肿瘤恶性通路（例如血管生成通路、抑制免疫细胞聚集的趋化性通路）就越活跃。
+          </p>
+        </section>
+
+        <!-- 第七部分 -->
+        <section
+          id="section-7"
+          class="bg-white rounded-lg shadow-custom p-4 hover-scale"
+        >
+          <div class="flex items-center mb-3">
+            <div
+              class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold mr-2"
+            >
+              7
             </div>
+            <h2 class="text-xl font-bold text-primary">化疗获益的精准预测</h2>
           </div>
 
-          <div>
-            <h3 class="text-xl font-semibold mb-4 text-primary">
-              放射基因组学分析
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <p class="mb-4">
-                  研究团队进一步做了放射基因组学分析，探索影像特征与基因表达之间的关系：
-                </p>
-                <ul class="list-disc pl-6 mb-4 space-y-2">
-                  <li>
-                    <strong>横轴 (X轴, QuRiS)</strong
-                    >：代表患者的CT影像评分。从左向右看，数值从负到正，代表患者的影像学风险越来越高。
-                  </li>
-                  <li>
-                    <strong>纵轴 (Y轴)</strong
-                    >：代表某种恶性生物学通路的活跃程度（基因集富集得分）。
-                  </li>
-                  <li>
-                    <strong>红线趋势</strong
-                    >：沿着X轴向右看，红线呈现出清晰的"上升趋势"，说明影像评分越高，该恶性通路越活跃。
-                  </li>
-                </ul>
-                <p class="font-semibold text-primary">
-                  这意味着，随着CT影像提示风险越高，患者体内的特定肿瘤恶性通路（例如血管生成通路、抑制免疫细胞聚集的趋化性通路）就越活跃。
-                </p>
-              </div>
-              <div class="image-container">
-                <img
-                  src="figure3.png"
-                  alt="放射基因组学分析图"
-                  class="w-full h-auto"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 第七部分 -->
-      <section id="section-7" class="mb-16">
-        <div class="flex items-center mb-6">
-          <div
-            class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white text-xl font-bold mr-4"
-          >
-            7
-          </div>
-          <h2 class="text-3xl font-bold text-primary">化疗获益的精准预测</h2>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-custom p-6 mb-8 hover-scale">
-          <p class="mb-6 text-lg">
+          <p class="mb-3 text-lg">
             研究的核心发现是QuRiS评分能够精准预测哪些患者能从术后辅助化疗中获益。
           </p>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <div class="image-container">
-              <img
-                src="figure4.png"
-                alt="低风险和高风险患者在接受不同治疗后的无病生存期对比"
-                class="w-full h-auto"
-              />
-            </div>
-            <div>
-              <h3 class="text-xl font-semibold mb-4 text-primary">
-                生存分析结果
-              </h3>
-              <p class="mb-4">
-                对比第二行（只做手术）和第三行（做了化疗）的生存曲线，我们可以得出以下关键结论：
-              </p>
-              <ul class="list-disc pl-6 mb-4 space-y-3">
-                <li>
-                  <strong class="text-secondary">高风险患者（红线）</strong
-                  >：做了化疗后，他们的复发风险显著降低，中位无病生存期大幅延长。
-                </li>
-                <li>
-                  <strong class="text-tertiary">低风险患者（蓝线）</strong
-                  >：如果做了化疗，其生存获益甚至不如单纯做手术。
-                </li>
-              </ul>
-              <div
-                class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded"
-              >
-                <p class="font-semibold text-primary">
-                  这具有极大的临床指导意义：
-                </p>
-                <p>
-                  只有高风险患者才需要术后化疗；而低风险患者做化疗，不但没有额外好处，反而可能因为化疗的毒副反应受害。
-                </p>
-              </div>
-            </div>
+          <div class="image-container mb-3">
+            <img
+              src="https://lcoffee7.github.io/Presentation-of-papers/10.1016.s2589-7500(20)30002-9/figure4.png"
+              alt="低风险和高风险患者在接受不同治疗后的无病生存期对比"
+              class="w-full h-auto"
+            />
           </div>
 
-          <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
-            <h3 class="text-xl font-semibold mb-4 text-primary">临床意义</h3>
-            <p class="mb-4">这项研究的发现对临床实践具有革命性的影响：</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="bg-white p-4 rounded shadow-sm">
-                <h4 class="font-semibold text-secondary mb-2">避免过度治疗</h4>
-                <p>
-                  低风险患者可以安全地避免化疗带来的毒副作用和生活质量下降，同时不会影响其生存预后。
-                </p>
-              </div>
-              <div class="bg-white p-4 rounded shadow-sm">
-                <h4 class="font-semibold text-tertiary mb-2">精准治疗</h4>
-                <p>
-                  高风险患者能够被准确识别，确保他们接受必要的化疗干预，从而显著提高生存率。
-                </p>
-              </div>
-              <div class="bg-white p-4 rounded shadow-sm">
-                <h4 class="font-semibold text-primary mb-2">医疗资源优化</h4>
-                <p>
-                  医疗资源可以更合理地分配给真正需要的患者，提高 healthcare
-                  system的效率。
-                </p>
-              </div>
-              <div class="bg-white p-4 rounded shadow-sm">
-                <h4 class="font-semibold text-primary mb-2">患者决策支持</h4>
-                <p>
-                  基于客观数据的预测模型为医生和患者提供了更可靠的决策依据，减少了治疗选择的不确定性。
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+          <h3 class="text-lg font-semibold mb-2 text-primary">生存分析结果</h3>
+          <p class="mb-2 text-lg">
+            对比第二行（只做手术）和第三行（做了化疗）的生存曲线，我们可以得出以下关键结论：
+          </p>
+          <ul class="list-disc pl-5 mb-3 text-lg space-y-1">
+            <li>
+              <strong class="text-secondary">高风险患者（红线）</strong
+              >：做了化疗后，他们的复发风险显著降低，中位无病生存期大幅延长。
+            </li>
+            <li>
+              <strong class="text-tertiary">低风险患者（蓝线）</strong
+              >：如果做了化疗，其生存获益甚至不如单纯做手术。
+            </li>
+          </ul>
 
-      <!-- 第八部分 -->
-      <section id="section-8" class="mb-16">
-        <div class="flex items-center mb-6">
           <div
-            class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white text-xl font-bold mr-4"
+            class="bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded mb-3"
           >
-            8
+            <p class="font-semibold text-primary text-sm mb-1">
+              这具有极大的临床指导意义：
+            </p>
+            <p class="text-sm">
+              只有高风险患者才需要术后化疗；而低风险患者做化疗，不但没有额外好处，反而可能因为化疗的毒副反应受害。
+            </p>
           </div>
-          <h2 class="text-3xl font-bold text-primary">
-            临床应用：QuRNom列线图
-          </h2>
-        </div>
 
-        <div class="bg-white rounded-lg shadow-custom p-6 hover-scale">
-          <p class="mb-6 text-lg">
+          <h3 class="text-lg font-semibold mb-2 text-primary">临床意义</h3>
+          <p class="mb-2 text-lg">这项研究的发现对临床实践具有革命性的影响：</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-2">
+            <div class="bg-gray-50 p-3 rounded shadow-sm">
+              <h4 class="font-semibold text-secondary text-sm mb-1">
+                避免过度治疗
+              </h4>
+              <p class="text-sm">
+                低风险患者可以安全地避免化疗带来的毒副作用和生活质量下降。
+              </p>
+            </div>
+            <div class="bg-gray-50 p-3 rounded shadow-sm">
+              <h4 class="font-semibold text-tertiary text-sm mb-1">精准治疗</h4>
+              <p class="text-sm">
+                高风险患者能够被准确识别，确保他们接受必要的化疗干预。
+              </p>
+            </div>
+            <div class="bg-gray-50 p-3 rounded shadow-sm">
+              <h4 class="font-semibold text-primary text-sm mb-1">
+                医疗资源优化
+              </h4>
+              <p class="text-sm">医疗资源可以更合理地分配给真正需要的患者。</p>
+            </div>
+            <div class="bg-gray-50 p-3 rounded shadow-sm">
+              <h4 class="font-semibold text-primary text-sm mb-1">
+                患者决策支持
+              </h4>
+              <p class="text-sm">
+                基于客观数据的预测模型为医生和患者提供了更可靠的决策依据。
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 第八部分 -->
+        <section
+          id="section-8"
+          class="bg-white rounded-lg shadow-custom p-4 hover-scale"
+        >
+          <div class="flex items-center mb-3">
+            <div
+              class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold mr-2"
+            >
+              8
+            </div>
+            <h2 class="text-xl font-bold text-primary">
+              临床应用：QuRNom列线图
+            </h2>
+          </div>
+
+          <p class="mb-3 text-lg">
             为了让QuRiS评分系统更易于临床应用，研究团队开发了一个综合预测列线图(QuRNom)，将影像组学评分与传统临床病理指标相结合。
           </p>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <div class="image-container">
-              <img
-                src="figure5.png"
-                alt="QuRNom综合预测列线图"
-                class="w-full h-auto"
-              />
-            </div>
-            <div>
-              <h3 class="text-xl font-semibold mb-4 text-primary">
-                QuRNom列线图的组成
-              </h3>
-              <p class="mb-4">
-                研究团队并没有让AI单打独斗，而是将QuRiS评分与医生最看重的三大临床病理金标准结合起来：
+          <div class="image-container mb-3">
+            <img
+              src="https://lcoffee7.github.io/Presentation-of-papers/10.1016.s2589-7500(20)30002-9/figure5.png"
+              alt="QuRNom综合预测列线图"
+              class="w-full h-auto"
+            />
+          </div>
+
+          <h3 class="text-lg font-semibold mb-2 text-primary">
+            QuRNom列线图的组成
+          </h3>
+          <p class="mb-2 text-lg">
+            研究团队并没有让AI单打独斗，而是将QuRiS评分与医生最看重的三大临床病理金标准结合起来：
+          </p>
+          <ul class="list-disc pl-5 mb-3 text-lg space-y-1">
+            <li><strong>QuRiS评分</strong>：基于CT影像的放射组学风险评分</li>
+            <li>
+              <strong>淋巴血管侵犯 (LVI)</strong>：肿瘤是否侵犯淋巴管或血管
+            </li>
+            <li><strong>N分期</strong>：淋巴结转移情况</li>
+            <li><strong>T分期</strong>：原发肿瘤大小和侵犯范围</li>
+          </ul>
+          <p class="font-semibold text-primary text-lg mb-3">
+            通过这种方式，QuRNom整合了影像学和病理学的优势，提供了更全面、更准确的预后预测。
+          </p>
+
+          <h3 class="text-lg font-semibold mb-2 text-primary">
+            QuRNom的使用方法
+          </h3>
+          <p class="mb-2 text-lg">
+            医生在门诊时可以按照以下步骤使用QuRNom列线图：
+          </p>
+
+          <div class="space-y-3 mb-3">
+            <div class="step-card bg-gray-50 p-3 rounded-lg">
+              <h4 class="font-semibold text-primary text-sm mb-1">
+                第一步：确定QuRiS评分
+              </h4>
+              <p class="text-lg">
+                假设一位患者的QuRiS评分为0.3，从QuRiS轴上的0.3位置垂直向上画一条线，对应最上面的Points轴，大约能得70分。
               </p>
-              <ul class="list-disc pl-6 mb-4 space-y-2">
-                <li>
-                  <strong>QuRiS评分</strong>：基于CT影像的放射组学风险评分
-                </li>
-                <li>
-                  <strong>淋巴血管侵犯 (LVI)</strong>：肿瘤是否侵犯淋巴管或血管
-                </li>
-                <li><strong>N分期</strong>：淋巴结转移情况</li>
-                <li><strong>T分期</strong>：原发肿瘤大小和侵犯范围</li>
-              </ul>
-              <p class="font-semibold text-primary">
-                通过这种方式，QuRNom整合了影像学和病理学的优势，提供了更全面、更准确的预后预测。
+            </div>
+
+            <div class="step-card bg-gray-50 p-3 rounded-lg">
+              <h4 class="font-semibold text-primary text-sm mb-1">
+                第二步：评估其他临床指标
+              </h4>
+              <p class="text-lg">
+                依次查找患者的其他临床指标：LVI（假设是Absent，对应0分）、N分期（假设是N1，对应约35分）、T分期（假设是T2，对应约20分）。
+              </p>
+            </div>
+
+            <div class="step-card bg-gray-50 p-3 rounded-lg">
+              <h4 class="font-semibold text-primary text-sm mb-1">
+                第三步：计算总分
+              </h4>
+              <p class="text-lg">将各项得分相加：70 + 0 + 35 + 20 = 125分。</p>
+            </div>
+
+            <div class="step-card bg-gray-50 p-3 rounded-lg">
+              <h4 class="font-semibold text-primary text-sm mb-1">
+                第四步：查看预测结果
+              </h4>
+              <p class="text-lg">
+                在Total
+                Points轴上找到125分的位置，垂直向下画一条直线，对应到3-Year
+                DFS轴。本例中，患者3年内不复发的概率约为15%，因此复发概率约为85%。
               </p>
             </div>
           </div>
 
-          <div class="mb-8">
-            <h3 class="text-xl font-semibold mb-4 text-primary">
-              QuRNom的使用方法
-            </h3>
-            <p class="mb-4">医生在门诊时可以按照以下步骤使用QuRNom列线图：</p>
-
-            <div class="space-y-4">
-              <div class="step-card bg-gray-50 p-4 rounded-lg">
-                <h4 class="font-semibold text-primary mb-2">
-                  第一步：确定QuRiS评分
-                </h4>
-                <p>
-                  假设一位患者的QuRiS评分为0.3，从QuRiS轴上的0.3位置垂直向上画一条线，对应最上面的Points轴，大约能得70分。
-                </p>
-              </div>
-
-              <div class="step-card bg-gray-50 p-4 rounded-lg">
-                <h4 class="font-semibold text-primary mb-2">
-                  第二步：评估其他临床指标
-                </h4>
-                <p>
-                  依次查找患者的其他临床指标：LVI（假设是Absent，对应0分）、N分期（假设是N1，对应约35分）、T分期（假设是T2，对应约20分）。
-                </p>
-              </div>
-
-              <div class="step-card bg-gray-50 p-4 rounded-lg">
-                <h4 class="font-semibold text-primary mb-2">
-                  第三步：计算总分
-                </h4>
-                <p>将各项得分相加：70 + 0 + 35 + 20 = 125分。</p>
-              </div>
-
-              <div class="step-card bg-gray-50 p-4 rounded-lg">
-                <h4 class="font-semibold text-primary mb-2">
-                  第四步：查看预测结果
-                </h4>
-                <p>
-                  在Total
-                  Points轴上找到125分的位置，垂直向下画一条直线，对应到3-Year
-                  DFS轴。本例中，患者3年内不复发的概率约为15%，因此复发概率约为85%。
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-primary/10 p-6 rounded-lg">
-            <h3 class="text-xl font-semibold mb-4 text-primary">性能提升</h3>
-            <p class="mb-4">
+          <div class="bg-primary/10 p-3 rounded-lg">
+            <h3 class="text-lg font-semibold mb-2 text-primary">性能提升</h3>
+            <p class="mb-2 text-lg">
               数据显示，传统的TNM临床病理模型预测准确度（C-index）只有0.65到0.71；而加入了QuRiS评分后，综合列线图的准确度直接跃升到了0.74。
             </p>
-            <div class="bg-white p-4 rounded-lg shadow-sm">
-              <p class="font-semibold text-center text-primary">
+            <div class="bg-white p-3 rounded-lg shadow-sm">
+              <p class="font-semibold text-center text-primary text-lg">
                 这完美证明了：AI影像组学不是要取代临床指标，而是作为一把极其锋利的辅助武器，与传统病理学强强联手，最终帮助医生实现早期肺癌的精准个性化治疗。
               </p>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        <!-- 关键发现总结 -->
+        <section class="bg-white rounded-lg shadow-custom p-4 hover-scale">
+          <h2 class="text-xl font-bold text-primary mb-3">关键发现总结</h2>
+          <div class="space-y-3">
+            <div class="flex items-start">
+              <div
+                class="w-6 h-6 bg-secondary rounded-full flex items-center justify-center text-white text-xs font-bold mr-2 mt-0.5"
+              >
+                1
+              </div>
+              <p class="text-lg">
+                QuRiS评分能够从CT影像中识别出具有高复发风险的早期肺癌患者，这些患者通常在微观层面表现出免疫细胞被排挤的特征。
+              </p>
+            </div>
+            <div class="flex items-start">
+              <div
+                class="w-6 h-6 bg-secondary rounded-full flex items-center justify-center text-white text-xs font-bold mr-2 mt-0.5"
+              >
+                2
+              </div>
+              <p class="text-lg">
+                高风险患者能从术后辅助化疗中显著获益，而低风险患者则无法从化疗中获得额外好处，反而可能因毒副作用而受害。
+              </p>
+            </div>
+            <div class="flex items-start">
+              <div
+                class="w-6 h-6 bg-secondary rounded-full flex items-center justify-center text-white text-xs font-bold mr-2 mt-0.5"
+              >
+                3
+              </div>
+              <p class="text-lg">
+                将QuRiS评分与传统临床病理指标（LVI、N分期、T分期）结合的QuRNom列线图，显著提高了预测准确度（C-index从0.65-0.71提升至0.74）。
+              </p>
+            </div>
+            <div class="flex items-start">
+              <div
+                class="w-6 h-6 bg-secondary rounded-full flex items-center justify-center text-white text-xs font-bold mr-2 mt-0.5"
+              >
+                4
+              </div>
+              <p class="text-lg">
+                这种AI辅助的精准医疗方法有助于避免过度治疗，优化医疗资源分配，并为医生和患者提供更可靠的决策支持。
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 研究局限性 -->
+        <section class="bg-white rounded-lg shadow-custom p-4 hover-scale">
+          <h2 class="text-xl font-bold text-primary mb-3">研究局限性</h2>
+          <ul class="list-disc pl-5 text-lg space-y-2">
+            <li>本研究为回顾性研究，需要前瞻性临床试验进一步验证</li>
+            <li>QuRiS评分的普适性需要在不同种族和人群中进一步验证</li>
+            <li>
+              需要更多研究来探索QuRiS评分与新兴治疗方法（如免疫治疗）的关系
+            </li>
+          </ul>
+        </section>
+      </div>
     </main>
 
+    <!-- 图片放大模态框 -->
+    <div
+      id="imageModal"
+      class="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center hidden"
+    >
+      <div class="relative w-full max-w-6xl max-h-[90vh]">
+        <button
+          class="absolute top-4 right-4 bg-white text-black w-10 h-10 rounded-full flex items-center justify-center text-xl font-bold hover:bg-gray-200 transition-colors"
+          onclick="closeModal()"
+        >
+          ×
+        </button>
+        <img
+          id="modalImage"
+          src=""
+          alt="放大图片"
+          class="max-w-full max-h-[90vh] object-contain"
+        />
+      </div>
+    </div>
+
     <!-- 页脚 -->
-    <footer class="bg-primary text-white py-8">
+    <footer class="bg-primary text-white py-6">
       <div class="container mx-auto px-4">
-        <div class="flex flex-col md:flex-row justify-between items-center">
-          <div class="mb-4 md:mb-0">
-            <h3 class="text-xl font-bold mb-2" style="text-align: center">
-              揭开黑箱
-            </h3>
-            <p class="text-sm opacity-80">
+        <div class="flex flex-col items-center justify-center">
+          <div class="mb-3 text-center">
+            <h3 class="text-lg font-bold mb-1">揭开黑箱</h3>
+            <p class="text-xs opacity-80">
               像素间的判官——AI如何破解早期肺癌的化疗迷局
             </p>
           </div>
@@ -473,7 +617,7 @@
           </div>
         </div>
         <div
-          class="mt-6 pt-6 border-t border-white/20 text-center text-sm opacity-80"
+          class="mt-4 pt-4 border-t border-white/20 text-center text-xs opacity-80"
         >
           <p>
             © 2026 lta的科学报道 | 数据来源：The Lancet Digital Health, 2020
@@ -519,32 +663,36 @@
         });
       });
 
-      // 图片点击放大效果
-      document.querySelectorAll(".image-container img").forEach((img) => {
-        img.addEventListener("click", function () {
-          if (!this.classList.contains("expanded")) {
-            this.classList.add("expanded");
-            this.style.cursor = "zoom-out";
-            this.parentElement.style.zIndex = "100";
-            this.parentElement.style.position = "relative";
-            this.style.transform = "scale(1.5)";
-            this.style.transition = "transform 0.3s ease";
-            this.style.objectFit = "contain";
-            this.style.maxHeight = "90vh";
-            this.style.maxWidth = "90vw";
-            this.style.margin = "auto";
-            this.style.display = "block";
-            this.parentElement.style.overflow = "visible";
-          } else {
-            this.classList.remove("expanded");
-            this.style.cursor = "zoom-in";
-            this.parentElement.style.zIndex = "1";
-            this.style.transform = "scale(1)";
-            this.style.objectFit = "cover";
-            this.parentElement.style.overflow = "hidden";
+      // 图片放大功能
+      function openModal(element) {
+        const modal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("modalImage");
+        modalImg.src = element.querySelector("img").src;
+        modal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeModal() {
+        const modal = document.getElementById("imageModal");
+        modal.classList.add("hidden");
+        document.body.style.overflow = "auto";
+      }
+
+      // ESC键关闭模态框
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          closeModal();
+        }
+      });
+
+      // 点击模态框背景关闭
+      document
+        .getElementById("imageModal")
+        .addEventListener("click", function (event) {
+          if (event.target === this) {
+            closeModal();
           }
         });
-      });
 
       // 添加页面加载动画
       window.addEventListener("load", function () {
