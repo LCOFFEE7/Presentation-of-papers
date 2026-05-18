@@ -51,6 +51,15 @@
         }
       }
 
+      /* 头部图片 */
+      .header-banner img {
+        width: 10%;
+        height: auto;
+        display: block;
+        object-fit: cover;
+        margin: 3% auto 3%;
+      }
+
       /* 自定义滚动条 */
       ::-webkit-scrollbar {
         width: 8px;
@@ -220,6 +229,9 @@
       class="bg-gradient-to-r from-primary to-primary/80 text-white py-16 md:py-24 flex items-center justify-center"
     >
       <div class="container mx-auto px-4 text-center max-w-4xl">
+        <div class="header-banner">
+          <img src="../logo.png" alt="logo.png" />
+        </div>
         <div
           class="bg-white/10 backdrop-blur-sm rounded-xl p-8 md:p-12 shadow-lg border border-white/20"
         >
