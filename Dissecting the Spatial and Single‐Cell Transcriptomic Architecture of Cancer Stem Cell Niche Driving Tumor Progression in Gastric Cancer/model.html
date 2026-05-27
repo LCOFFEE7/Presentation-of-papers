@@ -1,0 +1,902 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>四象限应力拮抗沙盒 (矢量图示版)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#1a56db",
+              secondary: "#4b5563",
+              accent: "#3b82f6",
+              dark: "#111827",
+              light: "#f8fafc",
+              danger: "#dc2626",
+              success: "#059669",
+              highlight: "#f59e0b",
+              muted: "#6b7280",
+              "primary-light": "#dbeafe",
+              "primary-dark": "#1e40af",
+            },
+            fontFamily: {
+              sans: ["Inter", "system-ui", "sans-serif"],
+              serif: ["Georgia", "Cambria", "serif"],
+            },
+            boxShadow: {
+              presentation:
+                "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+              card: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+              "card-hover":
+                "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+            },
+            spacing: {
+              section: "5rem",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .text-shadow {
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .text-shadow-lg {
+          text-shadow:
+            0 4px 8px rgba(0, 0, 0, 0.12),
+            0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+        .bg-gradient-blue {
+          background: linear-gradient(135deg, #111827 0%, #1a56db 100%);
+        }
+        .bg-gradient-light {
+          background: linear-gradient(135deg, #f3f4f6 0%, #ffffff 100%);
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+          0% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-20px);
+          }
+          100% {
+            transform: translateY(0px);
+          }
+        }
+        .animate-pulse-slow {
+          animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .transition-fade {
+          transition: opacity 0.5s ease-in-out;
+        }
+        .citation {
+          font-size: 0.8em;
+          color: #6b7280;
+          vertical-align: super;
+        }
+        .text-balance {
+          text-wrap: balance;
+        }
+        .leading-relaxed-lg {
+          line-height: 1.8;
+        }
+        .shadow-glow {
+          box-shadow: 0 0 15px rgba(26, 86, 219, 0.3);
+        }
+      }
+      body {
+        background: #fdfbf7;
+        font-family: "Inter", sans-serif;
+        overflow-x: hidden;
+      }
+      .font-serif {
+        font-family: "Merriweather", serif;
+      }
+      .canvas-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 1000px;
+        aspect-ratio: 2 / 1;
+        margin: 0 auto;
+      }
+      #matter-canvas canvas {
+        width: 100% !important;
+        height: 100% !important;
+      }
+      /* 自定义四种滑块的重音色 */
+      .accent-right {
+        accent-color: #f43f5e;
+      } /* Rose */
+      .accent-left {
+        accent-color: #10b981;
+      } /* Emerald */
+      .accent-up {
+        accent-color: #8b5cf6;
+      } /* Violet */
+      .accent-down {
+        accent-color: #3b82f6;
+      } /* Blue */
+
+      /* 头部图片 */
+      .header-banner img {
+        width: 10%;
+        height: auto;
+        display: block;
+        object-fit: cover;
+        margin: 3% auto 3%;
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen flex flex-col items-center py-8 px-4">
+    <nav
+      class="bg-white text-dark shadow-presentation sticky top-0 z-50 w-full"
+    >
+      <div
+        class="container mx-auto px-4 py-3 flex justify-between items-center"
+      >
+        <div class="flex items-center space-x-2">
+          <img src="../logo.png" alt="logo" class="h-8 w-auto object-contain" />
+          <span class="text-xl font-bold">肿瘤演化应力模型</span>
+        </div>
+      </div>
+    </nav>
+
+    <header class="bg-gradient-blue text-white py-20 md:py-4">
+      <div class="header-banner">
+        <img src="../logo.png" alt="logo.png" />
+      </div>
+      <div class="container mx-auto px-4">
+        <div class="max-w-5xl mx-auto text-center">
+          <!-- 标题 -->
+          <div class="mb-12">
+            <h1
+              class="text-4xl md:text-6xl font-bold mb-6 leading-tight text-shadow"
+            >
+              肿瘤演化应力模型
+            </h1>
+          </div>
+
+          <!-- 模型信息 -->
+          <div class="text-sm opacity-80 max-w-3xl mx-auto">
+            <p>
+              四象应力模型：调节促癌/抑癌推力，以及稳态解离/锚定力。观察多因素作用下的演化。
+            </p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="w-full max-w-[1000px]">
+      <div class="flex justify-end items-end mb-4">
+        <button
+          id="reset-btn"
+          class="px-5 py-2 bg-gray-800 hover:bg-gray-900 text-white text-sm font-bold rounded-lg shadow flex items-center gap-2"
+        >
+          ⟳ 重置演化
+        </button>
+      </div>
+
+      <div
+        class="canvas-wrapper bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden mb-6"
+      >
+        <svg
+          id="svg-layer"
+          viewBox="0 0 1000 500"
+          class="absolute inset-0 w-full h-full z-0 pointer-events-none"
+        >
+          <defs>
+            <linearGradient
+              id="terrain-gradient"
+              x1="0%"
+              y1="0%"
+              x2="0%"
+              y2="100%"
+            >
+              <stop offset="0%" stop-color="#f8fafc" />
+              <stop offset="100%" stop-color="#e2e8f0" />
+            </linearGradient>
+          </defs>
+          <path
+            id="landscape-path"
+            fill="url(#terrain-gradient)"
+            stroke="#cbd5e1"
+            stroke-width="4"
+          ></path>
+          <text
+            x="180"
+            y="475"
+            text-anchor="middle"
+            class="fill-sky-700 font-bold text-lg"
+          >
+            1. 正常主细胞
+          </text>
+          <text
+            x="360"
+            y="240"
+            text-anchor="middle"
+            class="fill-gray-400 text-sm font-semibold tracking-wider"
+          >
+            能垒 A
+          </text>
+          <text
+            x="550"
+            y="415"
+            text-anchor="middle"
+            class="fill-purple-700 font-bold text-lg"
+          >
+            2. SPEM 过渡态
+          </text>
+          <text
+            x="730"
+            y="260"
+            text-anchor="middle"
+            class="fill-gray-400 text-sm font-semibold tracking-wider"
+          >
+            能垒 B
+          </text>
+          <text
+            x="880"
+            y="490"
+            text-anchor="middle"
+            class="fill-rose-700 font-bold text-lg"
+          >
+            3. 癌症干细胞
+          </text>
+        </svg>
+
+        <svg
+          id="vector-chart"
+          viewBox="0 0 1000 500"
+          class="absolute inset-0 w-full h-full z-20 pointer-events-none"
+        >
+          <defs>
+            <marker
+              id="arrowhead-1"
+              viewBox="0 0 10 10"
+              refX="5"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#f43f5e" />
+            </marker>
+            <marker
+              id="arrowhead-2"
+              viewBox="0 0 10 10"
+              refX="5"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981" />
+            </marker>
+            <marker
+              id="arrowhead-3"
+              viewBox="0 0 10 10"
+              refX="5"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b5cf6" />
+            </marker>
+            <marker
+              id="arrowhead-4"
+              viewBox="0 0 10 10"
+              refX="5"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#3b82f6" />
+            </marker>
+            <marker
+              id="black-arrowhead"
+              viewBox="0 0 10 10"
+              refX="5"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f2937" />
+            </marker>
+            <marker
+              id="black-arrowhead-small"
+              viewBox="0 0 10 10"
+              refX="5"
+              refY="5"
+              markerWidth="5"
+              markerHeight="5"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f2937" />
+            </marker>
+          </defs>
+
+          <g id="vector-origin" transform="translate(100, 100)">
+            <circle cx="0" cy="0" r="4" fill="#374151" />
+            <line
+              id="arrow-1"
+              x1="0"
+              y1="0"
+              x2="0"
+              y2="0"
+              stroke="#f43f5e"
+              stroke-width="1.5"
+              marker-end="url(#arrowhead-1)"
+            />
+            <line
+              id="arrow-2"
+              x1="0"
+              y1="0"
+              x2="0"
+              y2="0"
+              stroke="#10b981"
+              stroke-width="1.5"
+              marker-end="url(#arrowhead-2)"
+            />
+            <line
+              id="arrow-3"
+              x1="0"
+              y1="0"
+              x2="0"
+              y2="0"
+              stroke="#8b5cf6"
+              stroke-width="1.5"
+              marker-end="url(#arrowhead-3)"
+            />
+            <line
+              id="arrow-4"
+              x1="0"
+              y1="0"
+              x2="0"
+              y2="0"
+              stroke="#3b82f6"
+              stroke-width="1.5"
+              marker-end="url(#arrowhead-4)"
+            />
+            <line
+              id="arrow-total"
+              x1="0"
+              y1="0"
+              x2="0"
+              y2="0"
+              stroke="#1f2937"
+              stroke-width="3"
+              marker-end="url(#black-arrowhead)"
+            />
+          </g>
+
+          <g id="chart-legend" transform="translate(850, 30)">
+            <rect x="0" y="0" width="10" height="10" fill="#f43f5e" rx="2" />
+            <text x="15" y="10" class="fill-gray-600 text-xs font-mono">
+              1. 促癌驱动力
+            </text>
+
+            <rect x="0" y="20" width="10" height="10" fill="#10b981" rx="2" />
+            <text x="15" y="30" class="fill-gray-600 text-xs font-mono">
+              2. 抑癌保护力
+            </text>
+
+            <rect x="0" y="40" width="10" height="10" fill="#8b5cf6" rx="2" />
+            <text x="15" y="50" class="fill-gray-600 text-xs font-mono">
+              3. 基质解离力
+            </text>
+
+            <rect x="0" y="60" width="10" height="10" fill="#3b82f6" rx="2" />
+            <text x="15" y="70" class="fill-gray-600 text-xs font-mono">
+              4. 稳态锚定力
+            </text>
+
+            <line
+              x1="0"
+              y1="85"
+              x2="10"
+              y2="85"
+              stroke="#1f2937"
+              stroke-width="2"
+              marker-end="url(#black-arrowhead-small)"
+            />
+            <text
+              x="15"
+              y="90"
+              class="fill-gray-900 text-xs font-bold font-mono"
+            >
+              合成力 (Total)
+            </text>
+          </g>
+        </svg>
+
+        <div
+          id="matter-canvas"
+          class="absolute inset-0 z-10 pointer-events-none"
+        ></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-rose-50 border border-rose-100 p-4 rounded-xl shadow-sm">
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="font-bold text-rose-700 text-sm">
+              1. 促癌驱动力 (向右)
+            </h3>
+            <span class="text-xs text-rose-500 font-mono"
+              >角度: <span id="val-a1">0</span>°</span
+            >
+          </div>
+          <div class="flex gap-4 items-center">
+            <div class="flex-1 flex flex-col gap-1">
+              <span class="text-[10px] text-gray-500 uppercase"
+                >强度 (Magnitude)</span
+              >
+              <input
+                type="range"
+                id="mag-1"
+                min="0"
+                max="0.0002"
+                step="0.00001"
+                value="0"
+                class="accent-right"
+              />
+            </div>
+            <div class="flex-1 flex flex-col gap-1">
+              <span class="text-[10px] text-gray-500 uppercase"
+                >偏转角 (-45° ~ 45°)</span
+              >
+              <input
+                type="range"
+                id="ang-1"
+                min="-45"
+                max="45"
+                step="1"
+                value="0"
+                class="accent-right"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl shadow-sm"
+        >
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="font-bold text-emerald-700 text-sm">
+              2. 抑癌保护力 (向左)
+            </h3>
+            <span class="text-xs text-emerald-600 font-mono"
+              >角度: <span id="val-a2">180</span>°</span
+            >
+          </div>
+          <div class="flex gap-4 items-center">
+            <div class="flex-1 flex flex-col gap-1">
+              <span class="text-[10px] text-gray-500 uppercase"
+                >强度 (Magnitude)</span
+              >
+              <input
+                type="range"
+                id="mag-2"
+                min="0"
+                max="0.0002"
+                step="0.00001"
+                value="0"
+                class="accent-left"
+              />
+            </div>
+            <div class="flex-1 flex flex-col gap-1">
+              <span class="text-[10px] text-gray-500 uppercase"
+                >偏转角 (135° ~ 225°)</span
+              >
+              <input
+                type="range"
+                id="ang-2"
+                min="135"
+                max="225"
+                step="1"
+                value="180"
+                class="accent-left"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="bg-violet-50 border border-violet-100 p-4 rounded-xl shadow-sm"
+        >
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="font-bold text-violet-700 text-sm">
+              3. 基质解离力 (向上减粘附)
+            </h3>
+            <span class="text-xs text-violet-600 font-mono"
+              >角度: <span id="val-a3">90</span>°</span
+            >
+          </div>
+          <div class="flex gap-4 items-center">
+            <div class="flex-1 flex flex-col gap-1">
+              <span class="text-[10px] text-gray-500 uppercase"
+                >强度 (Magnitude)</span
+              >
+              <input
+                type="range"
+                id="mag-3"
+                min="0"
+                max="0.0002"
+                step="0.00001"
+                value="0"
+                class="accent-up"
+              />
+            </div>
+            <div class="flex-1 flex flex-col gap-1">
+              <span class="text-[10px] text-gray-500 uppercase"
+                >偏转角 (45° ~ 135°)</span
+              >
+              <input
+                type="range"
+                id="ang-3"
+                min="45"
+                max="135"
+                step="1"
+                value="90"
+                class="accent-up"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl shadow-sm">
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="font-bold text-blue-700 text-sm">
+              4. 稳态锚定力 (向下增粘附)
+            </h3>
+            <span class="text-xs text-blue-600 font-mono"
+              >角度: <span id="val-a4">-90</span>°</span
+            >
+          </div>
+          <div class="flex gap-4 items-center">
+            <div class="flex-1 flex flex-col gap-1">
+              <span class="text-[10px] text-gray-500 uppercase"
+                >强度 (Magnitude)</span
+              >
+              <input
+                type="range"
+                id="mag-4"
+                min="0"
+                max="0.0002"
+                step="0.00001"
+                value="0"
+                class="accent-down"
+              />
+            </div>
+            <div class="flex-1 flex flex-col gap-1">
+              <span class="text-[10px] text-gray-500 uppercase"
+                >偏转角 (-135° ~ -45°)</span
+              >
+              <input
+                type="range"
+                id="ang-4"
+                min="-135"
+                max="-45"
+                step="1"
+                value="-90"
+                class="accent-down"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--模型评述-->>
+    <div class="max-w-3xl mx-auto p-2">
+      <div class="flex items-center justify-center mb-8">
+        <div class="w-14 h-14 mr-5 flex items-center justify-center">
+          <img
+            src="../logo.png"
+            alt="logo"
+            class="w-full h-full object-contain"
+          />
+        </div>
+        <h2 class="text-3xl md:text-4xl font-bold text-dark">思考与讨论</h2>
+      </div>
+
+      <div
+        class="bg-white rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 p-8 md:p-10 border border-gray-100"
+      >
+        <div
+          class="bg-primary-light rounded-lg p-8 border-l-4 border-primary mb-8 shadow-sm"
+        >
+          <h3
+            class="text-2xl font-bold text-gray-800 text-center mb-10 tracking-wide"
+            style="text-indent: 0"
+          >
+            先验知识：瓦丁顿表观遗传景观理论
+          </h3>
+          <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+            1957年，康拉德·瓦丁顿以其富有先见之明的“表观遗传景观”理论，为生命发育的复杂逻辑提供了一个极具美学价值的物理化身。在这一理论构筑的宏大隐喻中，个体的生命进程被描绘为一颗在崎岖高地上不断向下滑动的球体。山顶象征着拥有无限可能的原始全能状态，而随着时间的推移，球体受重力驱动向低处的河谷跌落。
+          </p>
+          <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+            这并非一场随机的坠落，地形中深邃且分叉的沟壑，是由基因调控网络精心雕琢而成的“发育路径”。这些纵横交错的河谷决定了细胞命运的走向：球体一旦滚入特定的轨道，便在“渠化作用”的保护下，展现出一种对抗微小环境干扰的惊人稳健性，最终精准地抵达终点，成为肌肉、神经或骨骼等特定的分化状态。
+          </p>
+          <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+            而在这一层起伏的地景之下，瓦丁顿更揭示了一个隐秘的支撑世界：无数代表基因的桩点与代表分子相互作用的丝线，在深处共同牵拉、支撑着上层的表面。这种隐喻深刻地指出了，生命的确定性并非源于单一基因的线性指令，而是涌现于整张基因调控网络所锚定的动态拓扑结构之中。它不仅定义了细胞命运在常规发育下的不可逆性，更在宏观层面揭示了遗传信息如何跨越随机波动的噪声，最终塑造出形态各异且秩序井然的生命实体。
+          </p>
+        </div>
+
+        <!--正文-->
+        <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+          由此，将肿瘤演化比作一个翻山越岭的过程是合理的。我们暂且将瓦丁顿理论所描绘的景观称为瓦丁顿山谷（这应该不是一个学名）。那么胃主细胞就位于一个海拔相当低的谷中。这意味着胃主细胞相当稳定。而胃主细胞向胃癌细胞演化，则需要克服某种演化能（这里借用了化学反应中活化能的概念）。
+        </p>
+        <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+          这里有一个精巧的设计，有别于很多简单的生物信息学分析，这里不仅将环境分为致癌因素和保护因素，还给出了垂直方向上的分解，分别令细胞趋于稳定的因素以及令细胞趋于演化活跃的因素。而常见的模型只是简单地将其划分为促癌或者抑癌因子的一部分。但是并不解释这些因子在多大程度上贡献了演化能的克服，抑或是癌变的进展。于是很多因子就具有双重性，在一些研究中表现为促癌，在一些研究中又表现为抑癌。
+        </p>
+        <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+          四象应力模型给出了四种代表性的动力。比如向上表示全能性动力（这不是一个术语，它表示使细胞具有多能性的动力）；向下表示稳态动力（同样，这表示如何令一个细胞安稳的保持原有状态，类似于惯性）；向左表示保护因素（当然在更大的范围看未必是件好事，它仅仅是将其拉远了癌症状态，但可能会导致其他未知的病变），向右代表致癌因素。
+        </p>
+        <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+          显然的，总应力朝右上时，癌症将表现为进展。当这个向量向右比向下长时，制约因素就变为垂直方向上的应力。因此一些向左上的因素在传统分类中此刻就表现为一种促癌因子。但是如果总应力中向上比向右长时，同一个向左上的因素在传统分类中就表现为一种抑癌因子。
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // --- 高斯势能面 ---
+      function getLandscapeY(x) {
+        const baseAltitude = 250;
+        const valleyChief = 180 * Math.exp(-Math.pow(x - 180, 2) / 12000);
+        const valleySPEM = 120 * Math.exp(-Math.pow(x - 550, 2) / 10000);
+        const valleyCSC = 220 * Math.exp(-Math.pow(x - 880, 2) / 10000);
+        return baseAltitude + valleyChief + valleySPEM + valleyCSC;
+      }
+
+      function drawVisualLandscape() {
+        let pathD = `M -10 520 L -10 ${getLandscapeY(-10)} `;
+        for (let x = 0; x <= 1010; x += 5) {
+          pathD += `L ${x} ${getLandscapeY(x)} `;
+        }
+        pathD += `L 1010 520 Z`;
+        document.getElementById("landscape-path").setAttribute("d", pathD);
+      }
+      drawVisualLandscape();
+
+      // --- 物理引擎初始化 ---
+      const Engine = Matter.Engine,
+        Render = Matter.Render,
+        Runner = Matter.Runner,
+        Bodies = Matter.Bodies,
+        Composite = Matter.Composite,
+        Events = Matter.Events;
+
+      const engine = Engine.create();
+      const render = Render.create({
+        element: document.getElementById("matter-canvas"),
+        engine: engine,
+        options: {
+          width: 1000,
+          height: 500,
+          wireframes: false,
+          background: "transparent",
+          pixelRatio: window.devicePixelRatio,
+        },
+      });
+
+      const terrainFeatures = [];
+
+      // 【新增：修复卡球 bug】在最左侧地形边界的最左侧边界生成一个静态挡板网格段。
+      // 在 x = -50 的位置添加静态挡板边界。
+      let leftBoundaryX = -50;
+      let leftBoundaryY = getLandscapeY(leftBoundaryX);
+      let leftBoundaryObstacle = Bodies.rectangle(
+        leftBoundaryX - 10,
+        leftBoundaryY - 50,
+        20,
+        100,
+        {
+          isStatic: true,
+          friction: 0.1,
+          render: { visible: false }, // 隐形但在物理上封闭
+        },
+      );
+      terrainFeatures.push(leftBoundaryObstacle);
+
+      for (let x = -50; x <= 1050; x += 10) {
+        let y1 = getLandscapeY(x),
+          y2 = getLandscapeY(x + 10);
+        let cx = x + 5,
+          cy = (y1 + y2) / 2;
+        let length = Math.sqrt(100 + Math.pow(y2 - y1, 2));
+        let angle = Math.atan2(y2 - y1, 10);
+        terrainFeatures.push(
+          Bodies.rectangle(cx, cy + 15, length + 2, 30, {
+            isStatic: true,
+            angle: angle,
+            friction: 0.1,
+            render: { visible: false },
+          }),
+        );
+      }
+
+      // 【空气墙】由于地形网格已完全封闭最左侧谷底的左侧边界。现有空气墙防止球飞高即可。
+      // 左墙、右墙：大幅向上下延伸
+      terrainFeatures.push(
+        Bodies.rectangle(-20, 0, 40, 2000, {
+          isStatic: true,
+          render: { visible: false },
+        }),
+      );
+      terrainFeatures.push(
+        Bodies.rectangle(1020, 0, 40, 2000, {
+          isStatic: true,
+          render: { visible: false },
+        }),
+      );
+      // 顶部天花板：防止浮力过大飞出屏幕 (设在 y = -500 处，允许飞高一点再弹回来)
+      terrainFeatures.push(
+        Bodies.rectangle(500, -500, 2000, 100, {
+          isStatic: true,
+          render: { visible: false },
+        }),
+      );
+      // 底部安全网
+      terrainFeatures.push(
+        Bodies.rectangle(500, 600, 2000, 100, {
+          isStatic: true,
+          render: { visible: false },
+        }),
+      );
+
+      Composite.add(engine.world, terrainFeatures);
+
+      // --- 细胞粒子生成与重置 ---
+      let particles = [];
+      const numCells = 50;
+
+      function initParticles() {
+        if (particles.length > 0) {
+          Composite.remove(engine.world, particles);
+          particles = [];
+        }
+        for (let i = 0; i < numCells; i++) {
+          let p = Bodies.circle(
+            180 + (Math.random() - 0.5) * 80,
+            200 + Math.random() * 50,
+            6,
+            {
+              restitution: 0.3,
+              friction: 0.05,
+              density: 0.002,
+              render: { fillStyle: "#38bdf8" },
+            },
+          );
+          particles.push(p);
+        }
+        Composite.add(engine.world, particles);
+      }
+      initParticles();
+
+      document
+        .getElementById("reset-btn")
+        .addEventListener("click", initParticles);
+
+      // 绑定角度显示同步
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById(`ang-${i}`).addEventListener("input", (e) => {
+          document.getElementById(`val-a${i}`).innerText = e.target.value;
+        });
+      }
+
+      // --- 四象限矢量叠加引擎 ---
+      Events.on(engine, "beforeUpdate", function () {
+        // 收集四组力的数据
+        let forces = [];
+        for (let i = 1; i <= 4; i++) {
+          forces.push({
+            mag: parseFloat(document.getElementById(`mag-${i}`).value),
+            ang: parseFloat(document.getElementById(`ang-${i}`).value),
+          });
+        }
+
+        // 矢量叠加计算总力 (Fx, Fy)
+        let totalFx = 0,
+          totalFy = 0;
+        forces.forEach((f) => {
+          if (f.mag > 0) {
+            // 标准极坐标系：角度逆时针。但在 Canvas 中 Y 轴向下，因此视觉“向上”对应数学上的 Y 负值
+            let angleRad = f.ang * (Math.PI / 180);
+            totalFx += f.mag * Math.cos(angleRad);
+            totalFy += -f.mag * Math.sin(angleRad); // 核心：减号实现了角度>0视觉向上飞
+          }
+        });
+
+        // 【新增：矢量图示更新】计算完矢量合力坐标后调用
+        updateVectorChart(totalFx, totalFy, forces);
+
+        particles.forEach((p) => {
+          // 色彩状态更新
+          if (p.position.x < 460) p.render.fillStyle = "#38bdf8";
+          else if (p.position.x < 760) p.render.fillStyle = "#a855f7";
+          else p.render.fillStyle = "#f43f5e";
+
+          // 基础热噪声
+          Matter.Body.applyForce(p, p.position, {
+            x: (Math.random() - 0.5) * 0.00004,
+            y: (Math.random() - 0.5) * 0.00004,
+          });
+
+          // 施加矢量分解后的宏观病理合力
+          if (totalFx !== 0 || totalFy !== 0) {
+            // 加入一点细胞异质性差异(受力面积不同)
+            let heterogeneity = 0.7 + Math.random() * 0.6;
+            Matter.Body.applyForce(p, p.position, {
+              x: totalFx * heterogeneity,
+              y: totalFy * heterogeneity,
+            });
+          }
+        });
+      });
+
+      Render.run(render);
+      Runner.run(Runner.create(), engine);
+
+      // --- 【新增：矢量图示更新函数】 ---
+      const vectorScale = 200000; // 用于缩放强度的像素长度
+
+      function updateVectorChart(totalFx, totalFy, forces) {
+        // 更新四个独立箭头
+        forces.forEach((f, i) => {
+          let arrow = document.getElementById(`arrow-${i + 1}`);
+          if (f.mag > 0) {
+            let angleRad = f.ang * (Math.PI / 180);
+            let length = f.mag * vectorScale;
+            // 注意 Canvas 坐标系 Y 轴向下，所以我们要减去 sin 才能让视觉向上
+            arrow.setAttribute("x2", length * Math.cos(angleRad));
+            arrow.setAttribute("y2", -length * Math.sin(angleRad));
+            arrow.style.visibility = "visible";
+          } else {
+            arrow.style.visibility = "hidden";
+          }
+        });
+
+        // 更新合成力箭头
+        let totalArrow = document.getElementById("arrow-total");
+        let totalLength =
+          Math.sqrt(totalFx * totalFx + totalFy * totalFy) * vectorScale;
+        if (totalLength > 0.1) {
+          // 避免零长度箭头的渲染问题
+          // totalFx and totalFy are already in canvas coordinates
+          totalArrow.setAttribute("x2", totalFx * vectorScale);
+          totalArrow.setAttribute("y2", totalFy * vectorScale);
+          totalArrow.style.visibility = "visible";
+        } else {
+          totalArrow.style.visibility = "hidden";
+        }
+      }
+    </script>
+  </body>
+</html>

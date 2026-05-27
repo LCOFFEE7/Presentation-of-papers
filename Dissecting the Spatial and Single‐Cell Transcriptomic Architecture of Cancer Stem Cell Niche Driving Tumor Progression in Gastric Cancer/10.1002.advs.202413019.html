@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>像素间的"判官"：AI如何破解早期肺癌的化疗迷局</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#1a56db",
+              secondary: "#4b5563",
+              accent: "#3b82f6",
+              dark: "#111827",
+              light: "#f8fafc",
+              danger: "#dc2626",
+              success: "#059669",
+              highlight: "#f59e0b",
+              muted: "#6b7280",
+              "primary-light": "#dbeafe",
+              "primary-dark": "#1e40af",
+            },
+            fontFamily: {
+              sans: ["Inter", "system-ui", "sans-serif"],
+              serif: ["Georgia", "Cambria", "serif"],
+            },
+            boxShadow: {
+              presentation:
+                "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+              card: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+              "card-hover":
+                "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+            },
+            spacing: {
+              section: "5rem",
+            },
+          },
+        },
+      };
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+        .text-shadow {
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .text-shadow-lg {
+          text-shadow:
+            0 4px 8px rgba(0, 0, 0, 0.12),
+            0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+        .bg-gradient-blue {
+          background: linear-gradient(135deg, #111827 0%, #1a56db 100%);
+        }
+        .bg-gradient-light {
+          background: linear-gradient(135deg, #f3f4f6 0%, #ffffff 100%);
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+          0% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-20px);
+          }
+          100% {
+            transform: translateY(0px);
+          }
+        }
+        .animate-pulse-slow {
+          animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .transition-fade {
+          transition: opacity 0.5s ease-in-out;
+        }
+        .citation {
+          font-size: 0.8em;
+          color: #6b7280;
+          vertical-align: super;
+        }
+        .text-balance {
+          text-wrap: balance;
+        }
+        .leading-relaxed-lg {
+          line-height: 1.8;
+        }
+        .shadow-glow {
+          box-shadow: 0 0 15px rgba(26, 86, 219, 0.3);
+        }
+        }
+
+        /* 头部图片 */
+        .header-banner img {
+        width: 10%;
+        height: auto;
+        display: block;
+        object-fit: cover;
+        margin: 3% auto 3%;
+        }
+        
+    </style>
+  </head>
+  <body>
+    <nav class="bg-white text-dark shadow-presentation sticky top-0 z-50">
+      <div
+        class="container mx-auto px-4 py-3 flex justify-between items-center"
+      >
+        <div class="flex items-center space-x-2">
+          <img src="../logo.png" alt="logo" class="h-8 w-auto object-contain" />
+          <span class="text-xl font-bold">“生命暗网” 肿瘤进化之路</span>
+        </div>
+      </div>
+    </nav>
+
+    <header class="bg-gradient-blue text-white py-20 md:py-4">
+      <div class="header-banner">
+        <img src="../logo.png" alt="logo.png" />
+      </div>
+      <div class="container mx-auto px-4">
+        <div class="max-w-5xl mx-auto text-center">
+          <div class="mb-12">
+            <h1
+              class="text-4xl md:text-6xl font-bold mb-6 leading-tight text-shadow"
+            >
+              胃部的“生命暗网”：</br>单细胞与空间维度下的肿瘤进化之路
+            </h1>
+          </div>
+
+          <div class="mb-8">
+            <p class="text-lg opacity-90">2026年5月25日</p>
+          </div>
+
+          <div class="text-sm opacity-80 max-w-3xl mx-auto">
+            <p>
+                Dissecting the Spatial and Single‐Cell Transcriptomic Architecture of Cancer Stem Cell Niche Driving Tumor Progression in Gastric Cancer <br>
+                Guangyu Zhang, Xin Zhang, Wenting Pan, et al.
+            </p>
+            <p class="mt-1"><em>Advanced Science</em>, 2025.2.14</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-12">
+
+        <div class="max-w-3xl mx-auto p-8">
+        <div class="relative mb-12">
+            <p class="font-serif text-xl leading-relaxed text-gray-500 mb-6 italic">
+                <span class="float-left text-7xl font-bold text-gray-900 mr-3 mt-2 leading-none">
+                在
+                </span>
+                胃癌这场残酷的微观战争中，癌细胞并不是唯一的反派。一项结合了<span class="font-semibold text-primary">单细胞测序与空间转录组学</span>的前沿研究揭示，<span class="font-bold text-primary-dark">肿瘤干细胞</span>正藏身于一个由免疫细胞和成纤维细胞共同织就的“阴影帝国”中。理解了这个<span class="font-bold text-primary">“微环境生态位”</span>的通讯密码，或许我们就能找到拔除癌症之根的终极武器。
+            </p>
+        </div>
+        </div>
+        
+        <div class="max-w-3xl mx-auto p-8">
+            <div class="flex items-center justify-center mb-8">
+              <div class="w-14 h-14 bg-primary rounded-full flex items-center justify-center text-white mr-5 shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-microscope-icon lucide-microscope"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg>
+              </div>
+              <h2 class="text-3xl md:text-4xl font-bold text-dark">
+                寻找“打不死”的种子
+              </h2>
+            </div>
+            <div class="bg-white rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 p-8 md:p-10 border border-gray-100">
+                <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em;">
+                    在临床医生眼中，胃癌（Gastric Cancer, GC）是一个极其狡猾的对手。尽管手术和化疗手段不断进步，但晚期患者的预后依然不容乐观。最令医学界头疼的现象莫过于<span class="font-semibold text-danger">“野火烧不尽”</span>——即便最先进的治疗手段清除掉了一部分病灶，肿瘤仍往往会像幽灵般卷土重来。 
+                </p>
+                <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em;">
+                    这个幽灵的真身，就是<span class="font-bold text-primary-dark">肿瘤干细胞（Cancer Stem Cells, CSCs）</span>。它们是肿瘤内部的一群“原始原住民”，数量稀少却拥有无限的自我复制和多向分化潜能。它们就像是驱动癌症生长的“种子”，对传统化疗具有极强的免疫力和耐药性。 
+                </p>
+                <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em;">
+                    然而，种子若要萌发，必须有合适的土壤。科学家逐渐意识到，CSCs并非孤军奋战，它们栖息在一个被称为<span class="font-bold text-primary">“干细胞生态位”（CSC Niche）</span>的复杂环境里。这个生态位由多种免疫细胞、基质细胞以及可溶性因子交织而成，它们为 CSCs 提供养分、发出信号，并构建出一道躲避免疫追捕的<span class="font-semibold text-primary">隐形护盾</span>。 
+                </p>
+                <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em;">
+                    长期以来，这片“土壤”内部的运作机制由于缺乏高分辨率的观测手段，始终笼罩在迷雾中。直到最近，由张敏（Min Zhang）教授等领导的一项发表在《Advanced Science》上的研究，利用<span class="font-bold text-primary">单细胞RNA测序（scRNA-seq）</span>和<span class="font-bold text-primary">空间转录组学技术</span>，终于为我们绘制出了一张胃癌“生命暗网”的全景图。 
+                </p>
+            </div>
+        </div>
+        
+        <div class="max-w-3xl mx-auto p-8">
+            <div class="flex items-center justify-center mb-8">
+                <div class="w-14 h-14 bg-primary rounded-full flex items-center justify-center text-white mr-5 shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-earth-icon lucide-earth"><path d="M21.54 15H17a2 2 0 0 0-2 2v4.54"/><path d="M7 3.34V5a3 3 0 0 0 3 3a2 2 0 0 1 2 2c0 1.1.9 2 2 2a2 2 0 0 0 2-2c0-1.1.9-2 2-2h3.17"/><path d="M11 21.95V18a2 2 0 0 0-2-2a2 2 0 0 1-2-2v-1a2 2 0 0 0-2-2H2.05"/><circle cx="12" cy="12" r="10"/></svg>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-dark">
+                    微观世界的“谷歌地球”与身份窃取之谜
+                </h2>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 p-8 md:p-10 border border-gray-100">
+                <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em;">
+                    想要理解癌症的演化，就必须从最基础的细胞层面看清它的变迁。研究团队对来自28名患者的胃粘膜组织（涵盖正常、胃炎、化生到癌症的完整阶段）进行了精密拆解，共获得了超过12万个高质量细胞的转录数据。 
+                </p>
+                <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em;">
+                    这项研究就像是为胃粘膜打造了一份<span class="font-bold text-primary">“细胞级谷歌地球”</span>。在传统的病理切片下，我们只能看到一片混乱的细胞海洋；但在单细胞测序的视角下，科学家可以清晰地分辨出每一类细胞的身份：从勤劳的分泌细胞到阴暗的恶性细胞，每一种细胞的“户籍”和“活动日志”都清晰可见。 
+                </p>
+                <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em;">
+                    更令人震惊的发现源于对“身份转变”的追踪。长期以来，胃癌干细胞的来源一直存在争议：它们是从现成的胃干细胞变异而来的，还是由普通细胞逆向演化而成的？
+                </p>
+                <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em;">
+                    通过复杂的算法模拟细胞演化轨迹，研究团队揭示了一条名为<span class="font-bold text-danger">“黑暗进化”</span>的路径：原本负责分泌消化酶的<span class="font-bold text-primary-dark">成熟胃主细胞（Mature Gastric Chief Cells）</span>，在某种病理压力的刺激下，竟然发生了惊人的<span class="font-semibold text-danger">“身份窃取”</span>。它们首先转化为一种中间状态（SPEM细胞，一种萎缩性胃炎中的化生细胞），最终彻底沦落为凶残的肿瘤干细胞。 
+                </p>
+                <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em;">
+                    在这一过程中，<span class="font-bold text-primary">EGFR（表皮生长因子受体）</span>和<span class="font-bold text-primary">WNT信号通路</span>被异常激活，充当了“进化加速器”，推动着这些本该为人体服务的细胞跨越恶性的鸿沟。这不仅证实了肿瘤干细胞的强大可塑性，也为我们早期预测胃癌的恶化路径提供了全新的生物标志物。 
+                </p>
+                <img src="figure_model.bmp" alt="figure1.png" class="w-full h-auto rounded-lg shadow-glow my-8"/>
+                <div class="text-center mt-6">
+                  <a href="model.html" class="text-sm text-primary hover:underline">四象应力模型</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-3xl mx-auto p-8">
+            <div class="flex items-center justify-center mb-8">
+                <div class="w-14 h-14 bg-primary rounded-full flex items-center justify-center text-white mr-5 shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chess-rook-icon lucide-chess-rook"><path d="M5 20a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1z"/><path d="M10 2v2"/><path d="M14 2v2"/><path d="m17 18-1-9"/><path d="M6 2v5a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2"/><path d="M6 4h12"/><path d="m7 18 1-9"/></svg>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-dark">
+                    共犯结构——谁在护送“种子”逃亡？
+                </h2>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 p-8 md:p-10 border border-gray-100">
+                <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em;">
+                    如果说 CSCs 是逃亡的通缉犯，那么它们周围的免疫细胞就是一群<span class="font-bold text-danger">被“策反”的保镖</span>。
+                </p>
+                <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em;">
+                    研究人员利用空间转录组技术，将数以万计的细胞放回它们原本在组织中的精确位置。他们惊讶地发现，肿瘤干细胞并非随机分布，它们总是被特定的、具有免疫抑制功能的细胞群层层包围。  
+                </p>
+                <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em;">
+                    首当其冲的是一群被称为<span class="font-bold text-primary">CXCL13+ T细胞</span>和<span class="font-bold text-success">CCL18+ M2型巨噬细胞</span>的群体。在健康的免疫系统中，T细胞本应是冲锋陷阵的战士，负责识别并处决癌细胞。然而，在这片受污染的土壤中，这些T细胞却表现出严重的<span class="font-semibold text-danger bg-red-50 px-1 rounded">“职业耗竭”</span>。
+                </p>
+                <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em;">
+                    研究揭示了一个精密的“握手协议”：肿瘤干细胞表面表达一种名为<span class="font-bold text-accent">NECTIN2/3</span>的配体，它能精准地与T细胞表面的抑制性受体<span class="font-bold text-accent">TIGIT</span>结合。这种结合就像是一次带有恶意代码的握手，向T细胞发送了“休兵”信号，使其丧失战斗力。
+                </p>
+                <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em;">
+                    与此同时，CCL18+ 巨噬细胞则扮演了<span class="font-semibold text-success">“清道夫内鬼”</span>的角色。它们不仅没有清除异常细胞，反而通过释放<span class="font-bold text-success">THBS1和FN1</span>等信号分子，进一步巩固了肿瘤干细胞的稳定性。这种空间上的紧密互动，构建了一个免疫逃逸的<span class="font-bold text-primary-dark">“安全屋”</span>，使得 CSCs 能够在人体眼皮子底下肆无忌惮地扩增。临床数据证实，这种保镖团队越庞大，患者的生存预后就越差。  
+                </p>
+                <img src="figure_mechanism.bmp" alt="figure_mechanism" class="w-full h-auto rounded-lg shadow-glow my-8"/>
+            </div>
+        </div>
+
+        <div class="max-w-3xl mx-auto p-8">
+            <div class="flex items-center justify-center mb-8">
+                <div class="w-14 h-14 bg-primary rounded-full flex items-center justify-center text-white mr-5 shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sprout-icon lucide-sprout"><path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3"/><path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4"/><path d="M5 21h14"/></svg>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-dark">
+                    肥料供应线——iCAFs 的致命温床
+                </h2>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 p-8 md:p-10 border border-gray-100">
+                <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em;">
+                    如果说免疫抑制是“保护伞”，那么成纤维细胞提供的则是让种子疯长的“肥料”。
+                </p>
+                <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em;">
+                    在胃癌微环境中，科学家发现了一类特殊的“勤杂工”——<span class="font-bold text-highlight">炎症性肿瘤相关成纤维细胞（iCAFs）</span>。这些细胞从普通的基质细胞演化而来，却变得异常活跃。它们不仅能重塑细胞外基质，更通过分泌一种名为<span class="font-semibold text-primary">双调蛋白（Amphiregulin, AREG）</span>的关键因子，直接介入了癌症的生长逻辑。 
+                    这便是研究中最为核心的发现：<span class="font-bold text-danger bg-red-50 px-1 rounded">AREG-ERBB2轴</span>。iCAFs大量生产 AREG 分子，这些分子像精准导弹一样落到肿瘤细胞表面的 ERBB2 受体上。接收到信号后的肿瘤细胞会迅速上调<span class="font-bold text-primary-dark">SOX9 和OLFM4基因</span>的表达——这两个基因正是维持细胞“干性”的核心指令。  
+                </p>
+                <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em;">
+                    这意味着，iCAFs 实际上是在不断地为肿瘤细胞<span class="font-semibold text-danger">“重置系统”</span>，强制让它们保持在最原始、最顽强的干细胞状态。
+                </p>
+                <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em;">
+                    更具临床价值的是，这一机制还解释了化疗耐药的根源。实验显示，当 AREG 分子持续刺激 ERBB2 受体时，<span class="font-semibold text-primary-dark">传统的靶向药物效果会大打折扣</span>。这就像是给敌军阵地空投了源源不断的补给箱，无论我方炮火（化疗）如何猛烈，敌方总能迅速修复损伤并卷土重来。通过干扰这一供应链，研究人员发现可以显著降低肿瘤细胞的侵袭性并提高对药物的敏感度。 
+                </p>
+                
+            </div>
+        </div>
+
+        <div class="max-w-3xl mx-auto p-8">
+            <div class="flex items-center justify-center mb-8">
+                <div class="w-14 h-14 bg-primary rounded-full flex items-center justify-center text-white mr-5 shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cctv-icon lucide-cctv"><path d="M16.75 12h3.632a1 1 0 0 1 .894 1.447l-2.034 4.069a1 1 0 0 1-1.708.134l-2.124-2.97"/><path d="M17.106 9.053a1 1 0 0 1 .447 1.341l-3.106 6.211a1 1 0 0 1-1.342.447L3.61 12.3a2.92 2.92 0 0 1-1.3-3.91L3.69 5.6a2.92 2.92 0 0 1 3.92-1.3z"/><path d="M2 19h3.76a2 2 0 0 0 1.8-1.1L9 15"/><path d="M2 21v-4"/><path d="M7 9h.01"/></svg>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-dark">
+                    瓦解“暗网”的未来蓝图
+                </h2>
+            </div>
+
+            <div class="bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 p-8 md:p-12 border border-gray-100">
+              <div class="mb-8">
+                <div class="bg-primary-light rounded-lg p-8 border-l-4 border-primary mb-8 shadow-sm">
+                  <p class="text-lg font-medium leading-relaxed-lg">
+                    这项研究为我们揭示的不仅是疾病的机制，更是反击的路线图。
+                  </p>
+                </div>
+                  <p class="text-gray-600 leading-relaxed" style="text-indent: 2em;">
+                  既然我们已经解析了胃癌干细胞生态位的“朋友圈”和“补给线”，精准医疗的方向便明朗了起来。未来的治疗可能不再仅仅盯着癌细胞本身，而是通过<span class="font-bold text-primary">“多点爆破”</span>来摧毁整个暗网：
+                  </p>
+              </div>
+
+              <div class="bg-slate-50 rounded-2xl p-6 md:p-8 border border-slate-100 mb-10">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div class="flex flex-col gap-3">
+                    <div class="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center">
+                      <i class="fa fa-seedling text-lg">1</i>
+                    </div>
+                    <h4 class="font-bold text-gray-800 text-lg">铲除毒性土壤</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                      开发针对 <span class="font-semibold">iCAFs</span> 或 <span class="font-semibold text-orange-700">AREG-ERBB2</span> 信号轴的抑制剂，切断肿瘤干细胞的养分供应。
+                    </p>
+                  </div>
+
+                  <div class="flex flex-col gap-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                      <i class="fa fa-shield-halved text-lg">2</i>
+                  </div>
+                    <h4 class="font-bold text-gray-800 text-lg">拆除免疫屏障</h4>
+                  <p class="text-sm text-gray-600 leading-relaxed">
+                    利用针对 <span class="font-semibold text-blue-700">TIGIT</span> 或相关节点的抗体，激活被“策反”的免疫细胞，让它们重新认清敌人。
+                  </p>
+                  </div>
+
+                  <div class="flex flex-col gap-3">
+                    <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center">
+                      <i class="fa fa-dna text-lg">3</i>
+                    </div>
+                    <h4 class="font-bold text-gray-800 text-lg">阻断身份逆转</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                      在胃炎和化生阶段干预 <span class="font-semibold text-purple-700">EGFR/WNT</span> 信号，防止成熟细胞沦为干细胞种子。
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="relative pl-6 border-l-4 border-primary">
+                <p class="text-lg text-gray-700 leading-relaxed italic">
+                  癌症治疗正从“寻找单一靶点”转向<span class="font-bold text-primary-dark">“系统生态治理”</span>。当我们能从细胞坐标系中精准锁定每一场“阴谋”发生的地点和方式时，那颗名为胃癌的顽固种子，终将失去它赖以生存的最后一片土壤。
+                </p>
+              </div>
+            </div>
+        </div>
+    </main>
+    
+
+    <div style="text-align: center;margin-bottom: 40px;">
+    <a 
+      href="https://lcoffee7.github.io/Presentation-of-papers/10.1016.s2589-7500(20)30002-9/attachment.html"
+      style="color: blue; text-decoration: underline;"
+    >实验设计推演（这是一个未完成的模块）</a>
+    </div>
+
+    <div style="text-align: center;margin-bottom: 40px;">
+    <a 
+      href="https://lcoffee7.github.io/Presentation-of-papers/10.1016.s2589-7500(20)30002-9/attachment.html"
+      style="color: blue; text-decoration: underline;"
+    >实验结果（这是一个未完成的模块）</a>
+    </div>
+    
+    <footer class="bg-dark text-white py-8">
+      <div class="container mx-auto px-4">
+        <div class="max-w-5xl mx-auto">
+          <div class="flex flex-col items-center mb-6 text-center">
+  <div class="flex items-center mb-4">
+    <i class="fa fa-flask text-2xl text-primary mr-2"></i>
+    <span class="text-xl font-bold text-white">“生命暗网”肿瘤进化之路</span>
+  </div>
+
+  <div class="flex space-x-8 items-center justify-center">
+    <a 
+      href="https://github.com/LCOFFEE7/Presentation-of-papers/blob/main/10.1016.s2589-7500(20)30002-9/CT%20derived%20radiomic%20score%20for%20predicting%20the%20added%20beneft%20of%20adjuvant-paper.pdf" 
+      class="flex items-center hover:text-primary transition-colors"
+      target="_blank"
+    >
+      <i class="fa fa-file-pdf-o text-xl mr-2"></i>
+      <span class="text-white underline">原文下载（尚未更正）</span>
+    </a>
+
+    <a 
+      href="https://github.com/LCOFFEE7/Presentation-of-papers/blob/main/10.1016.s2589-7500(20)30002-9/CT%20derived%20radiomic%20score%20for%20predicting%20the%20added%20beneft%20of%20adjuvant-supplementary.pdf" 
+      class="flex items-center hover:text-primary transition-colors"
+      target="_blank"
+    >
+      <i class="fa fa-file-pdf-o text-xl mr-2"></i>
+      <span class="text-white underline">附件（尚未更正）</span>
+    </a>
+  </div>
+  </div>
+          <div class="border-t border-gray-700 pt-6">
+            <p class="text-center text-gray-400">
+              © lta的科学报道 | 基于《Advanced Science》发表的研究
+            </p>
+            <p class="text-center text-gray-500 text-sm mt-2">
+              本网页设计用于学术汇报，内容仅供学习交流使用
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <button
+      id="back-to-top"
+      class="fixed bottom-8 right-8 bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center shadow-glow opacity-0 invisible transition-all duration-300"
+    >
+      <i class="fa fa-arrow-up"></i>
+    </button>
+
+    <script>
+      // 移动端菜单切换
+      document
+        .getElementById("mobile-menu-button")
+        .addEventListener("click", function () {
+          const mobileMenu = document.getElementById("mobile-menu");
+          mobileMenu.classList.toggle("hidden");
+        });
+
+      // 返回顶部按钮
+      const backToTopButton = document.getElementById("back-to-top");
+
+      window.addEventListener("scroll", function () {
+        if (window.pageYOffset > 300) {
+          backToTopButton.classList.remove("opacity-0", "invisible");
+          backToTopButton.classList.add("opacity-100", "visible");
+        } else {
+          backToTopButton.classList.remove("opacity-100", "visible");
+          backToTopButton.classList.add("opacity-0", "invisible");
+        }
+      });
+
+      backToTopButton.addEventListener("click", function () {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      });
+
+      // 平滑滚动
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+
+          const targetId = this.getAttribute("href");
+          const targetElement = document.querySelector(targetId);
+
+          if (targetElement) {
+            window.scrollTo({
+              top: targetElement.offsetTop - 80,
+              behavior: "smooth",
+            });
+
+            // 如果是移动端，点击后关闭菜单
+            const mobileMenu = document.getElementById("mobile-menu");
+            if (!mobileMenu.classList.contains("hidden")) {
+              mobileMenu.classList.add("hidden");
+            }
+          }
+        });
+      });
+
+      // 页面加载完成后初始化
+      document.addEventListener("DOMContentLoaded", function () {
+        // 添加动画效果
+        gsap.from("header h1", { opacity: 0, y: 30, duration: 1 });
+        gsap.from("header p", { opacity: 0, y: 20, duration: 1, delay: 0.3 });
+        gsap.from("header .mb-8", {
+          opacity: 0,
+          y: 20,
+          duration: 1,
+          delay: 0.6,
+        });
+
+        // 滚动动画
+        const sections = document.querySelectorAll("section");
+        sections.forEach((section) => {
+          gsap.from(section.querySelector("h2"), {
+            scrollTrigger: {
+              trigger: section,
+              start: "top 80%",
+            },
+            opacity: 0,
+            x: -30,
+            duration: 0.8,
+          });
+
+          gsap.from(section.querySelectorAll("p, .bg-light, .bg-white"), {
+            scrollTrigger: {
+              trigger: section,
+              start: "top 70%",
+            },
+            opacity: 0,
+            y: 20,
+            duration: 0.8,
+            stagger: 0.2,
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
