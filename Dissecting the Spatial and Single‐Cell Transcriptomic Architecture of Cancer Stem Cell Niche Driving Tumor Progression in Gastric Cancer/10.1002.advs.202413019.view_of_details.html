@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>胃部的“生命暗网”：细节解读</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#1a56db",
+              secondary: "#4b5563",
+              accent: "#3b82f6",
+              dark: "#111827",
+              light: "#f8fafc",
+              danger: "#dc2626",
+              success: "#059669",
+              highlight: "#f59e0b",
+              muted: "#6b7280",
+              "primary-light": "#dbeafe",
+              "primary-dark": "#1e40af",
+            },
+            fontFamily: {
+              sans: ["Inter", "system-ui", "sans-serif"],
+              serif: ["Georgia", "Cambria", "serif"],
+            },
+            boxShadow: {
+              presentation:
+                "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+              card: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+              "card-hover":
+                "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+            },
+            spacing: {
+              section: "5rem",
+            },
+          },
+        },
+      };
+    </script>
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .text-shadow {
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .text-shadow-lg {
+          text-shadow:
+            0 4px 8px rgba(0, 0, 0, 0.12),
+            0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+        .bg-gradient-blue {
+          background: linear-gradient(135deg, #111827 0%, #1a56db 100%);
+        }
+        .bg-gradient-light {
+          background: linear-gradient(135deg, #f3f4f6 0%, #ffffff 100%);
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+          0% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-20px);
+          }
+          100% {
+            transform: translateY(0px);
+          }
+        }
+        .animate-pulse-slow {
+          animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .transition-fade {
+          transition: opacity 0.5s ease-in-out;
+        }
+        .citation {
+          font-size: 0.8em;
+          color: #6b7280;
+          vertical-align: super;
+        }
+        .text-balance {
+          text-wrap: balance;
+        }
+        .leading-relaxed-lg {
+          line-height: 1.8;
+        }
+        .shadow-glow {
+          box-shadow: 0 0 15px rgba(26, 86, 219, 0.3);
+        }
+      }
+
+      /* 头部图片 */
+      .header-banner img {
+        width: 10%;
+        height: auto;
+        display: block;
+        object-fit: cover;
+        margin: 3% auto 3%;
+      }
+    </style>
+  </head>
+  <body class="bg-light text-secondary font-sans antialiased">
+    <nav class="bg-white text-dark shadow-presentation sticky top-0 z-50">
+      <div
+        class="container mx-auto px-4 py-3 flex justify-between items-center"
+      >
+        <div class="flex items-center space-x-2">
+          <img src="../logo.png" alt="logo" class="h-8 w-auto object-contain" />
+          <span class="text-xl font-bold">“生命暗网” 肿瘤进化之路</span>
+        </div>
+      </div>
+    </nav>
+
+    <header class="bg-gradient-blue text-white py-20 md:py-4">
+      <div class="header-banner">
+        <img src="../logo.png" alt="logo.png" />
+      </div>
+      <div class="container mx-auto px-4">
+        <div class="max-w-5xl mx-auto text-center">
+          <div class="mb-12">
+            <h1
+              class="text-4xl md:text-6xl font-bold mb-6 leading-tight text-shadow"
+            >
+              胃部的“生命暗网”：设计与细节
+            </h1>
+          </div>
+
+          <div class="mb-8">
+            <p class="text-lg opacity-90">阅读概要及分析报告</p>
+          </div>
+
+          <div class="text-sm opacity-80 max-w-3xl mx-auto">
+            <p>
+              Dissecting the Spatial and Single‐Cell Transcriptomic Architecture
+              of Cancer Stem Cell Niche Driving Tumor Progression in Gastric
+              Cancer <br />
+              Guangyu Zhang, Xin Zhang, Wenting Pan, et al.
+            </p>
+            <p class="mt-1"><em>Advanced Science</em>, 2026. IF=14.1</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-12">
+      <div class="max-w-3xl mx-auto p-8">
+        <div class="relative mb-12">
+          <p
+            class="font-serif text-xl leading-relaxed text-gray-500 mb-6 italic"
+          >
+            <span
+              class="float-left text-7xl font-bold text-gray-900 mr-3 mt-2 leading-none"
+            >
+              申
+            </span>
+            明：所有未在正文证明的结论，作者都声称在支撑材料中进行了分析。但仍有一些结论仅仅凭借正文存在相当多的可疑之处。因未能查阅支撑材料细节，本文相关揣测不存在恶意中伤作者的嫌疑，而仅仅是提出学术质疑。
+          </p>
+        </div>
+      </div>
+
+      <div class="max-w-3xl mx-auto p-8">
+        <div class="flex items-center justify-center mb-8">
+          <div
+            class="w-14 h-14 bg-primary rounded-full flex items-center justify-center text-white mr-5 shadow-md"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-book-open"
+            >
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+            </svg>
+          </div>
+          <h2 class="text-3xl md:text-4xl font-bold text-dark">摘要及介绍</h2>
+        </div>
+        <div
+          class="bg-white rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 p-8 md:p-10 border border-gray-100"
+        >
+          <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+            本文阐明了肿瘤上皮的表型具有可塑性，以及成熟胃主细胞到肿瘤干细胞的转录轨迹。肿瘤干细胞通过免疫抑制性<span
+              class="font-bold text-primary"
+              >CXCL13+ T细胞</span
+            >和<span class="font-bold text-success">CCL18+ M2巨噬细胞</span
+            >的互作逃逸免疫监视；炎症相关成纤维细胞（iCAFs）则促进肿瘤生成和维持肿瘤干性，共同构成预后较差的肿瘤干细胞生态位。其中，来自
+            iCAFs 的双调蛋白通过上调 SOX9 的表达以促进肿瘤干性，并通过
+            AREG-ERBB2 轴促进耐药性。
+          </p>
+          <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+            胃癌在癌症相关的死因中名列前茅，晚期预后极差，肿瘤干细胞在此过程中至关重要。关于其起源存在争议：层次模型认为其起源于胃黏膜干细胞；随机模型则认为其起源于经历上皮间质转化的肿瘤细胞。本文着重研究了肿瘤干细胞从正常组织化生为癌症组织的细胞和分子景观，强调了其生态位异质性对肿瘤进展的推动作用。
+          </p>
+        </div>
+      </div>
+
+      <div class="max-w-3xl mx-auto p-8">
+        <div class="flex items-center justify-center mb-8">
+          <div
+            class="w-14 h-14 bg-primary rounded-full flex items-center justify-center text-white mr-5 shadow-md"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-microscope"
+            >
+              <path d="M6 18h8" />
+              <path d="M3 22h18" />
+              <path d="M14 22a7 7 0 1 0 0-14h-1" />
+              <path d="M9 14h2" />
+              <path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z" />
+              <path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3" />
+            </svg>
+          </div>
+          <h2 class="text-3xl md:text-4xl font-bold text-dark">
+            2.1 胃癌进展过程中的动态细胞转录组学景观
+          </h2>
+        </div>
+        <div
+          class="bg-white rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 p-8 md:p-10 border border-gray-100"
+        >
+          <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+            为研究胃癌干细胞的演化轨迹，本文选取的样本包含了5个正常人、10个胃炎患者以及13个未接受治疗的胃癌患者。总体采用单细胞空间转录组技术，总计得到了
+            128,940 个高质量细胞。
+          </p>
+          <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+            通过特定细胞类型标记和拷贝数变异（inferCNV），这些细胞被分为十种主要细胞类型。随后通过基因集变异分析（GSVA）比较了上皮细胞的功能差异，并用
+            STARTRAC-dist 指数进一步比较了细胞类型百分比的变化。
+          </p>
+          <img
+            src="./pictures/picture_1.bmp"
+            alt="picture_1"
+            class="w-full h-auto rounded-lg shadow-glow"
+          />
+        </div>
+      </div>
+
+      <div class="max-w-3xl mx-auto p-8">
+        <div class="flex items-center justify-center mb-8">
+          <div
+            class="w-14 h-14 bg-primary rounded-full flex items-center justify-center text-white mr-5 shadow-md"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-earth"
+            >
+              <path d="M21.54 15H17a2 2 0 0 0-2 2v4.54" />
+              <path
+                d="M7 3.34V5a3 3 0 0 0 3 3a2 2 0 0 1 2 2c0 1.1.9 2 2 2a2 2 0 0 0 2-2c0-1.1.9-2 2-2h3.17"
+              />
+              <path
+                d="M11 21.95V18a2 2 0 0 0-2-2a2 2 0 0 1-2-2v-1a2 2 0 0 0-2-2H2.05"
+              />
+              <circle cx="12" cy="12" r="10" />
+            </svg>
+          </div>
+          <h2 class="text-3xl md:text-4xl font-bold text-dark">
+            2.2 癌症干细胞的单细胞和空间转录分析
+          </h2>
+        </div>
+        <div
+          class="bg-white rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 p-8 md:p-10 border border-gray-100"
+        >
+          <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+            通过 UMAP 分析，上皮细胞被进一步分解为 11
+            个主簇。肿瘤性胃转移的特点是从主要细胞过渡到 SPEM
+            以及壁细胞的丧失。通过 PROGENy 通路活性推断分析证实 CSC 表现出<span
+              class="font-bold text-danger"
+              >炎症与干性相关通路的激活</span
+            >。
+          </p>
+          <img
+            src="./pictures/picture_2A-F.bmp"
+            alt="picture_2A-F"
+            class="w-full h-auto rounded-lg shadow-glow"
+          />
+          <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+            轨迹与动态分析（Slingshot 和
+            Monocle）揭示了分化轨迹：SPEM细胞源于主细胞转分化，并继而发展为 T2
+            与 CSC。而空间转录谱分析则直观展示了空间簇 C5 显著富含 CSC
+            相关的信号通路，证明了其在原位的空间分布特征。
+          </p>
+          <img
+            src="./pictures/picture_2E-J.bmp"
+            alt="picture_2E-J"
+            class="w-full h-auto rounded-lg shadow-glow"
+          />
+          <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+            为了表征和可视化CSC原位的空间分布，作者对早期和进展的GC组织做了空间转录谱分析：降维聚类为6类，并展示了聚类效果与感兴趣的干性相关基因表达的空间分布。癌症信号通路分析，基因本体术语分析和PROGENy分析显示，空间簇C5富含CSC相关的信号通路。这些结论也在更晚期的胃癌数据中得到了验证。
+          </p>
+          <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+            这一部分利用了空间数据，并进一步从表达层面说明了CSLC、化生与胃炎细胞的共性。并从图谱中侧面说明了CSLC有更多的上皮来源而非间充质。（这里之所以是癌症干细胞样细胞，是因为这是无监督聚类，CSLC中并没有区分肿瘤细胞与肿瘤干细胞，而后续的功能分析仅仅是证明CSLC具有恶性）
+          </p>
+          <img
+            src="./pictures/picture_3.bmp"
+            alt="picture_3"
+            class="w-full h-auto rounded-lg shadow-glow"
+          />
+          <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+            总之这一部分绘制了CSLC的具体位置，除了提供上皮间质来源的侧面证据之外几乎没有实际意义。
+          </p>
+        </div>
+      </div>
+
+      <div class="max-w-3xl mx-auto p-8">
+        <div class="flex items-center justify-center mb-8">
+          <div
+            class="w-14 h-14 bg-primary rounded-full flex items-center justify-center text-white mr-5 shadow-md"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-shield-alert"
+            >
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              <path d="M12 8v4" />
+              <path d="M12 16h.01" />
+            </svg>
+          </div>
+          <h2 class="text-3xl md:text-4xl font-bold text-dark">
+            2.3 抑制性免疫细胞及其相互作用
+          </h2>
+        </div>
+        <div
+          class="bg-white rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 p-8 md:p-10 border border-gray-100"
+        >
+          <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+            肿瘤的免疫微环境同样不可忽视。研究将肿瘤浸润淋巴细胞（TIL）分为 12
+            类，发现其中三组 T 细胞在胃癌中显著富集，展现出<span
+              class="font-semibold text-danger"
+              >耗竭和细胞毒性特征</span
+            >（如 CXCL13+ CD8 T细胞），且与肿瘤干细胞丰度呈显著正相关。
+          </p>
+          <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+            胞间互作及多重免疫荧光分析发现，SOX9 阳性肿瘤干细胞可通过
+            <span class="font-bold text-accent">NECITIN2-TIGIT 轴</span>与 T
+            细胞发生高度交互抑制，而 CCL18+ 的巨噬细胞也对不良预后有着直接影响。
+          </p>
+          <img
+            src="./pictures/picture_4.bmp"
+            alt="picture_4"
+            class="w-full h-auto rounded-lg shadow-glow"
+          />
+        </div>
+      </div>
+      <div class="max-w-3xl mx-auto p-8">
+        <div class="flex items-center justify-center mb-8">
+          <div
+            class="w-14 h-14 bg-primary rounded-full flex items-center justify-center text-white mr-5 shadow-md"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-activity"
+            >
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+          </div>
+          <h2 class="text-3xl md:text-4xl font-bold text-dark">
+            2.4 癌症关联成纤维细胞(CAF)的动态特征
+          </h2>
+        </div>
+        <div
+          class="bg-white rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 p-8 md:p-10 border border-gray-100"
+        >
+          <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+            癌症相关成纤维细胞（CAF）被划分为6个亚群，通过比例分析发现
+            <span class="font-bold text-primary">iCAF</span> 和
+            <span class="font-bold text-primary">CST1+ mCAF</span>
+            在胃癌组织中高度富集。功能富集分析（KEGG 和 PROGENy）表明，iCAF
+            表达高水平的炎性细胞因子、趋化因子及生长因子，并高度激活 IL6
+            信号通路、缺氧和肿瘤生长信号（如 EGFR、WNT、MAPK 和
+            TGF-β），这对于维持肿瘤干细胞（CSC）至关重要。相应的生存分析亦证实，iCAF
+            及其标志基因（AREG、IL24）的高表达往往预示着更差的临床预后。
+          </p>
+          <img
+            src="./pictures/picture_5.bmp"
+            alt="picture_5"
+            class="w-full h-auto rounded-lg shadow-glow"
+          />
+          <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+            <span class="font-semibold text-danger">【质疑】</span>
+            原文刻意强调了 VEGF 通路的参与，却选择性忽略了更为显著的 WNT
+            信号通路。更致命的是，作者声称轨迹分析表明 CST1+ mCAF
+            是细胞分化途径的过渡状态，但<span class="font-bold text-danger"
+              >该拟时序分析结果与功能分析结果存在极其荒谬的冲突</span
+            >。若功能富集数据准确，CST1+ mCAF
+            在向终点演化时必然经历“先抑制再反弹”的过山车模式；且拟时序曲线末端出现的“平地起高楼”式的断崖式飙升，恰恰反向证明了在转录谱系上
+            iCAF
+            与其他细胞间存在巨大断层。作者回避这一严重违背生物学常识的分析结果，存在利用参数调整强行编造轨迹的嫌疑。
+          </p>
+        </div>
+      </div>
+
+      <div class="max-w-3xl mx-auto p-8">
+        <div class="flex items-center justify-center mb-8">
+          <div
+            class="w-14 h-14 bg-primary rounded-full flex items-center justify-center text-white mr-5 shadow-md"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-network"
+            >
+              <rect x="16" y="16" width="6" height="6" rx="1" />
+              <rect x="2" y="16" width="6" height="6" rx="1" />
+              <rect x="9" y="2" width="6" height="6" rx="1" />
+              <path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3" />
+              <path d="M12 12V8" />
+            </svg>
+          </div>
+          <h2 class="text-3xl md:text-4xl font-bold text-dark">
+            2.5 iCAF与肿瘤干细胞(CSC)的相互作用
+          </h2>
+        </div>
+        <div
+          class="bg-white rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 p-8 md:p-10 border border-gray-100"
+        >
+          <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+            胞间通讯研究表明，iCAF 和 CST1+ mCAF
+            经常与免疫细胞和肿瘤细胞（尤其是
+            CSC）发生高频的相互作用。作者通过网络中心度分析声称 iCAF 主要通过
+            WNT 和 EGF 信号通路与 CSC
+            发生互作；并且空间转录组学结果进一步从物理空间分布上“证实”了 iCAF 与
+            CSC 在早期和晚期胃癌中存在空间共定位及正相关性。
+          </p>
+          <img
+            src="./pictures/picture_6.bmp"
+            alt="picture_6"
+            class="w-full h-auto rounded-lg shadow-glow"
+          />
+          <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+            <span class="font-semibold text-danger">【质疑】</span>
+            这一部分展示了极其明显的<span class="font-bold text-danger"
+              >数据挑选（Cherry-picking）痕迹</span
+            >。首先，作者选择性地无视了微环境中其他与 CSC
+            高强度互作的亚型细胞；其次，强推的 WNT
+            信号通路其实在所有显著配受体结果中，绝对互作强度几乎处于垫底水平。最令人费解的是，在抛出一堆显著的强关联配受体对之后，作者宛如“神来之笔”般，毫无依据地单独挑出了
+            <span class="font-bold text-highlight">AREG-ERBB2 轴</span>
+            作为整个互作网络的代表去进行空间共定位验证。结合前文的预后分析，这一选择更像是先射箭后画靶，强行为了迎合后续湿实验而改写了生信数据的解读逻辑。
+          </p>
+        </div>
+      </div>
+
+      <div class="max-w-3xl mx-auto p-8">
+        <div class="flex items-center justify-center mb-8">
+          <div
+            class="w-14 h-14 bg-primary rounded-full flex items-center justify-center text-white mr-5 shadow-md"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-flask-conical"
+            >
+              <path d="M10 2v7.31" />
+              <path d="M14 9.3V1.99" />
+              <path d="M8.5 2h7" />
+              <path d="M14 9.3a6.5 6.5 0 1 1-4 0" />
+              <line x1="5.52" x2="18.48" y1="16" y2="16" />
+            </svg>
+          </div>
+          <h2 class="text-3xl md:text-4xl font-bold text-dark">
+            2.6 iCAFs通过AREG-ERBB2轴显著促进增殖与干性
+          </h2>
+        </div>
+        <div
+          class="bg-white rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 p-8 md:p-10 border border-gray-100"
+        >
+          <p class="text-lg mb-8 leading-relaxed-lg" style="text-indent: 2em">
+            为弥补生信分析部分跳跃的逻辑闭环，作者在最后这一部分补充了大量的临床前湿实验进行原位与体外验证。通过多重免疫荧光实验（mIF）再次确认了
+            AREG-ERBB2 确实在胃癌组织中存在空间互作分布。随后开展了 Transwell
+            共培养、qRT-PCR、肿瘤球体形成试验、集落形成试验及蛋白质印迹分析（Western
+            Blotting）。
+          </p>
+          <img
+            src="./pictures/picture_7.bmp"
+            alt="picture_7"
+            class="w-full h-auto rounded-lg shadow-glow"
+          />
+          <p class="text-lg mb-0 leading-relaxed-lg" style="text-indent: 2em">
+            各项功能学指标共同表明，<span class="font-bold text-success"
+              >AREG-ERBB2 轴作为关键的配体-受体对</span
+            >，能够将 iCAF 直接物理连接到肿瘤细胞，通过下游激活 AKT
+            信号通路，全方位介导了癌症干细胞特征的维持、肿瘤细胞增殖以及抗药性的产生。由于纯湿实验部分通常具备相对坚实的因果验证逻辑，这套完备的功能学验证，最终为了前面所有充满质疑与强行挑选的生信测序故事提供了一个体面而坚硬的学术背书。
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <div style="text-align: center; margin-bottom: 40px">
+      <a
+        href="https://lcoffee7.github.io/Presentation-of-papers/10.1016.s2589-7500(20)30002-9/attachment.html"
+        style="color: blue; text-decoration: underline"
+        >主旨概览</a
+      >
+    </div>
+
+    <footer class="bg-dark text-white py-8">
+      <div class="container mx-auto px-4">
+        <div class="max-w-5xl mx-auto">
+          <div class="flex flex-col items-center mb-6 text-center">
+            <div class="flex items-center mb-4">
+              <span class="text-xl font-bold">文献研读与批判展示</span>
+            </div>
+            <p class="text-gray-400 text-sm max-w-2xl">
+              本页面旨在重构并展示《Dissecting the Spatial and Single‐Cell
+              Transcriptomic
+              Architecture...》的核心实验设计、数据细节及批判性概要。
+              <br />AI使用声明：本页面的内容由AI依据人工手稿辅助生成。
+            </p>
+          </div>
+          <div
+            class="border-t border-gray-700 pt-6 text-center text-gray-500 text-sm"
+          >
+            <p>&copy; 2026 Presentation of papers.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        gsap.from("header h1", { opacity: 0, y: 30, duration: 1 });
+        gsap.from("header p", { opacity: 0, y: 20, duration: 1, delay: 0.3 });
+        gsap.from("header .max-w-3xl", {
+          opacity: 0,
+          y: 20,
+          duration: 1,
+          delay: 0.6,
+        });
+
+        const sections = document.querySelectorAll("main > div");
+        sections.forEach((section) => {
+          gsap.from(section, {
+            scrollTrigger: {
+              trigger: section,
+              start: "top 85%",
+            },
+            opacity: 0,
+            y: 30,
+            duration: 0.8,
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
